@@ -123,68 +123,131 @@ npx skills add wxkingstar/ai-output-runtime -g -y
 
 ## Hacker News — Show HN
 
-**Title**（不超过 80 字符）：
+> **Sharpened.** Title candidates A/B/C ranked, body restructured around "the debate, both wrong → here's the third path", concrete data-block example in the body, sharper feedback ask. Posting-timing notes below.
+
+**Title — candidates ranked:**
+
+1. **(recommended)** `Show HN: AIO – a Markdown contract for AI reports (charts, funnels, no HTML)` *(75 chars)*
+2. `Show HN: 28KB runtime that turns AI-emitted JSON into business reports` *(70 chars)*
+3. `Show HN: I gave Claude 15 report components without letting it write HTML` *(73 chars)*
+
+#1 leads with the protocol noun ("Markdown contract"), names concrete components reads will care about ("charts, funnels"), and ends on the safety wedge. #2 is more numeric/hooky. #3 is more storytelling, slightly riskier (HN sometimes downvotes "I + first person + AI" titles).
+
+**Body:**
 
 ```
-Show HN: AIO – a Markdown contract that lets AI write reports without HTML
-```
+There was a long thread a while back about whether AI should output HTML or
+Markdown for reports. Both sides had a point.
 
-**Body**：
+  HTML party: Markdown can't show a funnel, a 2x2 risk matrix, a P&L bridge,
+              a KPI gauge. You need real layout.
+  Markdown party: HTML from a language model is unsafe — prompted styles,
+              injected event handlers, third-party iframes. Pick something
+              you can audit byte-for-byte.
 
-```
-Hi HN — this started as a reaction to the "AI should output HTML vs Markdown"
-debate that ran for a while on r/ClaudeCode and X. Both sides have a point:
-HTML is more expressive, Markdown is safer. Neither is great when you actually
-want an AI to ship a business report.
+AIO is the third path. The AI writes Markdown with a small set of fenced JSON
+blocks. A 28 KB browser runtime renders them. The model literally never writes
+HTML, CSS, JS, iframes, or event handlers — string fields reject `<` and `>`,
+blocks must parse as JSON, every field is schema-checked twice (Node CLI for
+authoring, runtime for rendering).
 
-AIO is the third path. The AI emits Markdown with a small set of fenced JSON
-data blocks (info string `aio:name@major`). A tiny 28 KB browser runtime renders
-them into a real report. The AI literally cannot output HTML, CSS, JS, iframe,
-event handlers, or styles — string fields reject `<` and `>`, blocks must
-parse as JSON, the schema is enforced both server-side (CLI) and client-side
-(runtime).
+A trend-card block from the weekly-report demo:
 
-v0.4.3 ships 15 components: 3 stable (table / metric-cards / callout) + 12
-candidates (chart / trend-card / status-grid / report-header / timeline /
-action-items / comparison / gauge / funnel / waterfall / heatmap / matrix).
-Each one targets one concrete business-report shape — weekly review, KPI/OKR
-scorecard, P&L bridge, conversion funnel, postmortem timeline, risk matrix,
-etc. Plus 30 lazy-loaded syntax-highlight language modules for code blocks.
+    ```aio:trend-card@1
+    {
+      "items": [
+        {
+          "label": "GMV",
+          "value": 12345678,
+          "format": "currency:CNY",
+          "delta": { "value": 0.083, "format": "percent", "direction": "up" },
+          "spark": [9.1, 9.6, 10.2, 11.1, 10.8, 11.7, 12.3],
+          "tone": "good"
+        }
+      ]
+    }
+    ```
 
-Things that surprised me while building it:
+The runtime renders a metric card with ¥12,345,678.00, an upward green ▲ 8.3%
+chip, and a small sparkline. The AI never types HTML.
 
-- The contract really is small enough to memorize. 12 candidate components
-  fit on a half page of SKILL.md.
-- Lazy-loading lang modules from jsDelivr lets the runtime stay 28 KB
-  gzipped while supporting 30 languages — first time a language is used
-  the browser fetches its ~1-2 KB module.
-- Locale-aware number formatting (`Intl.NumberFormat`) was the single most
-  impactful UX change. "13620" looking like "13,620" is the difference
-  between "data" and "report".
-- Print-to-PDF is unironically good if you set up @page + cover-page
-  break-after on the report header. Got business folks asking how to
-  email it before realizing they could just print.
+v0.4.3 ships 15 components covering the business-report shapes I kept running
+into:
 
-Try the live demo (the page is itself an AIO document — click "View source"
-to see the Markdown that produced it):
-https://wxkingstar.github.io/ai-output-runtime/
+* "what's the number?" → metric-cards, trend-card (with Δ + sparkline)
+* "what's red?" → status-grid, callout
+* "what changed?" → waterfall (P&L bridge), comparison matrix
+* "how does it convert?" → funnel
+* "are we hitting target?" → gauge (KPI/OKR semicircle)
+* "where's the heat?" → heatmap (2D density)
+* "what's the priority?" → matrix (2x2 quadrant)
+* "what happened?" → timeline, action-items (with owner/due/priority)
+* "header & sign-off" → report-header (auto-emitted from YAML frontmatter),
+  callout
 
-Two more demos:
-- https://wxkingstar.github.io/ai-output-runtime/demo-weekly.html (weekly review)
-- https://wxkingstar.github.io/ai-output-runtime/demo-dashboard.html (Q1 dashboard)
+Plus 30 syntax-highlight language modules (6 inlined, 24 lazy-loaded from
+jsDelivr — first time a language is used, the browser fetches its ~1-2 KB
+module).
+
+Three things that surprised me building it:
+
+1. The contract really is small enough to memorize. 15 components fit on
+   a half page of SKILL.md and the AI gets it on first try.
+
+2. The locale-aware number formatting (`Intl.NumberFormat`) was the single
+   highest-impact UX change. "13620" rendered as "13,620" is the difference
+   between "data dump" and "report".
+
+3. Print-to-PDF is unironically good. @page A4 + cover-page page-break-after
+   on the report header + `page-break-before: always` on H1s gets you a
+   stakeholder-emailable artifact for free.
+
+Try the live demo — the page is itself an AIO document; click "View source"
+in the top bar to see the Markdown that produced it:
+
+  https://wxkingstar.github.io/ai-output-runtime/
+
+Two longer demos:
+
+  https://wxkingstar.github.io/ai-output-runtime/demo-weekly.html (weekly review)
+  https://wxkingstar.github.io/ai-output-runtime/demo-dashboard.html (Q1 review)
 
 Repo (MIT): https://github.com/wxkingstar/ai-output-runtime
 
-The skill installs into Claude Code, Codex, Cursor, and ~50 other agents via:
+Installs into Claude Code, Codex, Cursor, and ~50 other agents via:
+
   npx skills add wxkingstar/ai-output-runtime -g -y
 
-Feedback I most want:
-- Are there business-report shapes I'm missing? (waterfall / funnel / matrix
-  cover most of what I needed, but I'm sure I have blind spots)
-- Anyone running this in production for actual stakeholder reports?
-- How does the schema feel from an agent's perspective when you try to
-  emit it without reading the docs?
+Three specific things I'd love feedback on:
+
+1. **Which report shape doesn't fit any of the 15 components.** I think
+   waterfall/funnel/matrix cover 80% of what I needed in production, but I
+   know I have blind spots. If you ship reports from an agent and a shape is
+   missing, tell me which one and what data you have.
+
+2. **Does the skill's description over-fire?** The trigger vocabulary is broad
+   (weekly/monthly/dashboard/postmortem/audit/KPI/OKR/funnel/waterfall/heatmap/
+   matrix/...). If you try this and the skill activates when you didn't want
+   it to, that's the most useful data I can get.
+
+3. **Print/PDF rendering edge cases.** A4 / Letter / Legal? Two-column? RTL?
+   If you hit a layout problem when actually trying to email a printed report,
+   please open an issue with the screenshot — I optimized for the cases I
+   could test (zh-CN A4 dark mode → print) and there are definitely gaps.
+
+(Also: the runtime is one file, 121 KB raw / 28 KB gzipped, no deps. The
+schema for each component is in `schemas/*.schema.json`. The CLI is in
+`scripts/aio.mjs`. The whole thing is browseable in under an hour.)
 ```
+
+**Posting-timing notes:**
+
+- HN front-page algo prefers fresh posts ≥ 5 upvotes in the first 30 min. Don't post and walk away.
+- Best windows for Show HN (PT): Tue/Wed/Thu 7-10am. Tuesday is safest. Avoid Fri-Sun.
+- Don't bother on a US holiday week (esp. US Thanksgiving / Christmas Eve / July 4).
+- After posting: don't reply to comments for the first 15 min (let the post float). Then engage every comment in the first 4h, polite + specific.
+- OG image: `wxkingstar.github.io/ai-output-runtime/` should serve a good preview. If not, the HN card looks empty.
+- Have `docs/screenshots/landing-light.png` ready to attach if a sub-comment asks "what does it look like".
 
 ---
 
