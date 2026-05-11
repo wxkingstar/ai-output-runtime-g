@@ -18,7 +18,7 @@ AIO is a middle path in that debate. It keeps Markdown as the source of truth, b
 
 - GitHub: https://github.com/wxkingstar/ai-output-runtime-g
 - Demo: https://wxkingstar.github.io/ai-output-runtime-g/
-- CDN: https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.1.1/assets/ai-output-runtime.js
+- CDN: https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.0/assets/ai-output-runtime.js
 - Install: `npx skills add wxkingstar/ai-output-runtime-g -y`
 
 ## X / Twitter

@@ -58,13 +58,13 @@ Use the latest `main` branch during development:
 Use the immutable version tag in production:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.1.1/assets/ai-output-runtime.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.0/assets/ai-output-runtime.js"></script>
 ```
 
 For supply-chain integrity, add a Subresource Integrity hash. Generate it with:
 
 ```bash
-curl -s https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.1.1/assets/ai-output-runtime.js \
+curl -s https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.0/assets/ai-output-runtime.js \
   | openssl dgst -sha384 -binary | openssl base64 -A
 ```
 
@@ -72,7 +72,7 @@ Then pin the hash in the script tag:
 
 ```html
 <script
-  src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.1.1/assets/ai-output-runtime.js"
+  src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.0/assets/ai-output-runtime.js"
   integrity="sha384-<paste-hash-here>"
   crossorigin="anonymous"></script>
 ```
@@ -86,7 +86,7 @@ node scripts/aio.mjs render report.md --inline-runtime
 Then render AIO Markdown:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.1.1/assets/ai-output-runtime.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.0/assets/ai-output-runtime.js"></script>
 <div id="app"></div>
 <script>
   AIOutputRuntime.render(markdown, {
