@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-output.dev/schemas/callout-v1.schema.json",
+  "title": "aio:callout@1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "tone": { "type": "string", "enum": ["info", "success", "warning", "danger"] },
+    "title": { "type": "string", "maxLength": 120, "pattern": "^[^<>]*$" },
+    "body": { "type": "string", "maxLength": 900, "pattern": "^[^<>]*$" },
+    "items": {
+      "type": "array",
+      "maxItems": 8,
+      "items": { "type": "string", "maxLength": 180, "pattern": "^[^<>]*$" }
+    }
+  },
+  "required": ["title", "body"]
+}

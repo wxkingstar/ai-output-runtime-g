@@ -1,0 +1,23 @@
+{
+  "version": "0.1.0",
+  "namespace": "aio",
+  "stable": [
+    {
+      "info": "aio:table@1",
+      "schema": "schemas/table-v1.schema.json",
+      "spec": "specs/table-v1.md"
+    },
+    {
+      "info": "aio:metric-cards@1",
+      "schema": "schemas/metric-cards-v1.schema.json",
+      "spec": "specs/metric-cards-v1.md"
+    },
+    {
+      "info": "aio:callout@1",
+      "schema": "schemas/callout-v1.schema.json",
+      "spec": "specs/callout-v1.md"
+    }
+  ],
+  "candidate": []
+}
+

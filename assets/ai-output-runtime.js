@@ -1,0 +1,1050 @@
+(function () {
+  "use strict";
+
+  const COMPONENTS = new Map();
+  const MAX_BLOCK_BYTES = 128 * 1024;
+  const MAX_TEXT_LENGTH = 600;
+  const MAX_ROWS = 100;
+  const MAX_COLUMNS = 12;
+  const MAX_METRICS = 8;
+  const AIO_INFO_RE = /^aio:([a-z][a-z0-9-]*)@([1-9][0-9]*)(?:\.([0-9]+))?$/;
+
+  const css = `
+    :root {
+      --ai-bg: #f4f6f8;
+      --ai-panel: #ffffff;
+      --ai-panel-soft: #f8fafc;
+      --ai-ink: #1f2937;
+      --ai-muted: #667085;
+      --ai-line: #e5e7eb;
+      --ai-accent: #2563eb;
+      --ai-accent-dark: #0f4f87;
+      --ai-accent-2: #16a34a;
+      --ai-green: #16a34a;
+      --ai-yellow: #f97316;
+      --ai-red: #dc2626;
+      --ai-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+
+    body.ai-output-body {
+      margin: 0;
+      background: var(--ai-bg);
+      color: var(--ai-ink);
+      font: 14px/1.58 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .ai-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ai-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(18px);
+      background: rgba(244, 246, 248, 0.92);
+      border-bottom: 1px solid var(--ai-line);
+    }
+
+    .ai-topbar-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .ai-brand {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .ai-brand strong {
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .ai-brand span {
+      color: var(--ai-muted);
+      font-size: 12px;
+    }
+
+    .ai-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .ai-button {
+      appearance: none;
+      border: 1px solid var(--ai-line);
+      background: var(--ai-panel);
+      color: var(--ai-ink);
+      border-radius: 6px;
+      padding: 6px 9px;
+      font: inherit;
+      font-size: 13px;
+      line-height: 1.2;
+      cursor: pointer;
+    }
+
+    .ai-button:hover { border-color: var(--ai-accent); color: var(--ai-accent); }
+
+    .ai-layout {
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 14px 16px 42px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .ai-document {
+      min-width: 0;
+      counter-reset: ai-section;
+    }
+
+    .ai-document > *:first-child { margin-top: 0; }
+
+    .ai-document h1 {
+      font-size: clamp(22px, 3vw, 30px);
+      line-height: 1.16;
+      margin: 0 0 10px;
+      letter-spacing: 0;
+    }
+
+    .ai-document > h1:first-child {
+      margin: 0 0 12px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 94% 10%, rgba(59, 130, 246, 0.34), transparent 30%),
+        linear-gradient(135deg, #0b3d6d 0%, #125b95 58%, #0f766e 100%);
+      border-radius: 9px;
+      padding: 24px 26px;
+      box-shadow: 0 12px 24px rgba(15, 79, 135, 0.18);
+    }
+
+    .ai-document h2 {
+      margin: 22px 0 10px;
+      font-size: 20px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .ai-document h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+
+    .ai-document p {
+      margin: 10px 0;
+      max-width: 860px;
+    }
+
+    .ai-document ul,
+    .ai-document ol {
+      margin: 8px 0 14px;
+      padding-left: 24px;
+      max-width: 840px;
+    }
+
+    .ai-document li { margin: 6px 0; }
+
+    .ai-document code {
+      background: #e9eef1;
+      border: 1px solid #dbe3ea;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .ai-document pre {
+      overflow: auto;
+      background: #0f172a;
+      color: #eef2ff;
+      border-radius: 6px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .ai-toc {
+      display: none;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid var(--ai-line);
+      border-radius: 7px;
+      box-shadow: var(--ai-shadow);
+    }
+
+    .ai-toc strong {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ai-muted);
+      margin-bottom: 10px;
+    }
+
+    .ai-toc a {
+      display: block;
+      color: var(--ai-ink);
+      text-decoration: none;
+      font-size: 13px;
+      line-height: 1.35;
+      padding: 7px 0;
+      border-top: 1px solid rgba(217, 224, 231, 0.7);
+    }
+
+    .ai-toc a:hover { color: var(--ai-accent); }
+
+    .ai-component {
+      margin: 14px 0;
+      background: var(--ai-panel);
+      border: 1px solid var(--ai-line);
+      border-radius: 8px;
+      box-shadow: var(--ai-shadow);
+      overflow: hidden;
+    }
+
+    .ai-component-header {
+      position: relative;
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--ai-line);
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      background: #fff;
+    }
+
+    .ai-component-header::before {
+      counter-increment: ai-section;
+      content: counter(ai-section);
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: #e8f1ff;
+      color: var(--ai-accent);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .ai-component-title {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.3;
+    }
+
+    .ai-component-subtitle {
+      color: var(--ai-muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .ai-component-body { padding: 14px; }
+
+    .ai-search {
+      width: min(240px, 100%);
+      border: 1px solid var(--ai-line);
+      border-radius: 6px;
+      padding: 7px 10px;
+      font: inherit;
+      font-size: 13px;
+      background: #fff;
+    }
+
+    .ai-table-wrap { overflow: auto; }
+
+    .ai-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+      font-size: 13px;
+    }
+
+    .ai-table th,
+    .ai-table td {
+      border-bottom: 1px solid var(--ai-line);
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .ai-table th {
+      color: var(--ai-muted);
+      background: #f8fafc;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .ai-table tr:last-child td { border-bottom: 0; }
+
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 20px;
+      border-radius: 999px;
+      padding: 1px 7px;
+      font-size: 11px;
+      border: 1px solid var(--ai-line);
+      background: #f8fafb;
+      color: var(--ai-ink);
+      white-space: nowrap;
+    }
+
+    .ai-badge.high { color: var(--ai-green); background: #edf7f1; border-color: #c9e7d6; }
+    .ai-badge.medium { color: var(--ai-yellow); background: #fff7e8; border-color: #ead8ad; }
+    .ai-badge.low { color: var(--ai-red); background: #fff0ef; border-color: #ebc3c0; }
+
+    .ai-decision {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.7fr);
+      gap: 18px;
+    }
+
+    .ai-decision-main {
+      background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 100%);
+      border: 1px solid #bbf7d0;
+      border-left: 4px solid var(--ai-green);
+      border-radius: 7px;
+      padding: 15px;
+    }
+
+    .ai-decision-label {
+      color: var(--ai-green);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .ai-decision-main strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .ai-risk-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .ai-risk {
+      border: 1px solid var(--ai-line);
+      border-radius: 7px;
+      padding: 11px;
+      background: #fff;
+    }
+
+    .ai-risk strong { display: block; margin-bottom: 4px; }
+    .ai-risk p { margin: 0; color: var(--ai-muted); font-size: 13px; }
+
+    .ai-matrix {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+    }
+
+    .ai-matrix-card {
+      border: 1px solid var(--ai-line);
+      border-radius: 7px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .ai-matrix-card strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .ai-score {
+      height: 8px;
+      border-radius: 999px;
+      background: #e9eef1;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .ai-score span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--ai-accent), #60a5fa);
+      border-radius: inherit;
+    }
+
+    .ai-metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .ai-metric-card {
+      background: #fff;
+      border: 1px solid var(--ai-line);
+      border-radius: 8px;
+      padding: 13px 14px;
+      box-shadow: var(--ai-shadow);
+    }
+
+    .ai-metric-label {
+      display: block;
+      color: var(--ai-muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ai-metric-value {
+      display: block;
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 800;
+      color: var(--ai-accent-dark);
+      margin-bottom: 7px;
+    }
+
+    .ai-metric-note {
+      color: var(--ai-muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .ai-metric-card.good .ai-metric-value { color: var(--ai-green); }
+    .ai-metric-card.warn .ai-metric-value { color: var(--ai-yellow); }
+    .ai-metric-card.bad .ai-metric-value { color: var(--ai-red); }
+
+    .ai-tabs {
+      display: flex;
+      gap: 6px;
+      border-bottom: 1px solid var(--ai-line);
+      overflow-x: auto;
+      padding: 0 14px;
+      background: #f8fafc;
+    }
+
+    .ai-tab {
+      appearance: none;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      padding: 12px 4px 10px;
+      margin-right: 16px;
+      font: inherit;
+      font-size: 14px;
+      color: var(--ai-muted);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .ai-tab[aria-selected="true"] {
+      color: var(--ai-accent);
+      border-bottom-color: var(--ai-accent);
+    }
+
+    .ai-tab-panel { display: none; }
+    .ai-tab-panel.active { display: block; }
+
+    .ai-flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      counter-reset: flow;
+    }
+
+    .ai-flow-step {
+      position: relative;
+      border: 1px solid var(--ai-line);
+      border-radius: 7px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .ai-flow-step::before {
+      counter-increment: flow;
+      content: counter(flow);
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: var(--ai-accent);
+      color: #fff;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .ai-flow-step strong { display: block; margin-bottom: 6px; }
+    .ai-flow-step p { margin: 0; color: var(--ai-muted); font-size: 13px; }
+
+    .ai-source {
+      display: none;
+      max-width: 980px;
+      margin: 0 auto 56px;
+      padding: 0 16px;
+    }
+
+    .ai-source.visible { display: block; }
+
+    .ai-source pre {
+      background: #18212f;
+      color: #f5f2e8;
+      border-radius: 7px;
+      padding: 16px;
+      overflow: auto;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .ai-error {
+      border: 1px solid #ebc3c0;
+      background: #fff0ef;
+      color: #7f1d1d;
+      border-radius: 7px;
+      padding: 12px;
+    }
+
+    .ai-callout {
+      border-left: 4px solid var(--ai-accent);
+    }
+
+    .ai-callout .ai-component-body {
+      background: #f8fbff;
+    }
+
+    .ai-callout-success { border-left-color: var(--ai-green); }
+    .ai-callout-success .ai-component-body { background: #f0fdf4; }
+    .ai-callout-warning { border-left-color: var(--ai-yellow); }
+    .ai-callout-warning .ai-component-body { background: #fff7ed; }
+    .ai-callout-danger { border-left-color: var(--ai-red); }
+    .ai-callout-danger .ai-component-body { background: #fef2f2; }
+
+    @media (max-width: 860px) {
+      .ai-layout {
+        grid-template-columns: 1fr;
+        padding-top: 20px;
+      }
+      .ai-toc { position: static; order: -1; }
+      .ai-decision { grid-template-columns: 1fr; }
+      .ai-metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .ai-topbar-inner { align-items: flex-start; flex-direction: column; }
+      .ai-actions { justify-content: flex-start; }
+    }
+
+    @media (max-width: 520px) {
+      .ai-metric-grid { grid-template-columns: 1fr; }
+      .ai-document > h1:first-child { padding: 20px; }
+    }
+  `;
+
+  function installStyles() {
+    if (document.getElementById("ai-output-runtime-style")) return;
+    const style = document.createElement("style");
+    style.id = "ai-output-runtime-style";
+    style.textContent = css;
+    document.head.append(style);
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  function slugify(text) {
+    return String(text)
+      .trim()
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}]+/gu, "-")
+      .replace(/^-+|-+$/g, "") || "section";
+  }
+
+  function inlineMarkdown(text) {
+    return escapeHtml(text)
+      .replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  }
+
+  function parseMarkdown(markdown) {
+    const lines = markdown.replace(/\r\n/g, "\n").split("\n");
+    const tokens = [];
+    let paragraph = [];
+    let list = null;
+
+    function flushParagraph() {
+      if (paragraph.length) {
+        tokens.push({ type: "paragraph", text: paragraph.join(" ") });
+        paragraph = [];
+      }
+    }
+
+    function flushList() {
+      if (list) {
+        tokens.push(list);
+        list = null;
+      }
+    }
+
+    for (let i = 0; i < lines.length; i += 1) {
+      const line = lines[i];
+      const fence = line.match(/^```([A-Za-z0-9:_.@-]+)?\s*$/);
+      if (fence) {
+        flushParagraph();
+        flushList();
+        const lang = fence[1] || "";
+        const body = [];
+        i += 1;
+        while (i < lines.length && !/^```\s*$/.test(lines[i])) {
+          body.push(lines[i]);
+          i += 1;
+        }
+        tokens.push({ type: "code", lang, code: body.join("\n") });
+        continue;
+      }
+
+      const heading = line.match(/^(#{1,3})\s+(.+)$/);
+      if (heading) {
+        flushParagraph();
+        flushList();
+        tokens.push({ type: "heading", depth: heading[1].length, text: heading[2].trim() });
+        continue;
+      }
+
+      const bullet = line.match(/^\s*[-*]\s+(.+)$/);
+      if (bullet) {
+        flushParagraph();
+        if (!list) list = { type: "list", ordered: false, items: [] };
+        list.items.push(bullet[1].trim());
+        continue;
+      }
+
+      const numbered = line.match(/^\s*\d+\.\s+(.+)$/);
+      if (numbered) {
+        flushParagraph();
+        if (!list) list = { type: "list", ordered: true, items: [] };
+        list.items.push(numbered[1].trim());
+        continue;
+      }
+
+      if (!line.trim()) {
+        flushParagraph();
+        flushList();
+        continue;
+      }
+
+      flushList();
+      paragraph.push(line.trim());
+    }
+
+    flushParagraph();
+    flushList();
+    return tokens;
+  }
+
+  function parseJsonBlock(type, code) {
+    if (new TextEncoder().encode(code).length > MAX_BLOCK_BYTES) {
+      throw new Error(`${type} exceeds ${MAX_BLOCK_BYTES} bytes`);
+    }
+    return JSON.parse(code);
+  }
+
+  function parseAioInfo(info) {
+    const match = String(info || "").match(AIO_INFO_RE);
+    if (!match) return null;
+    return {
+      id: `${match[1]}@${match[2]}`,
+      name: match[1],
+      major: Number(match[2]),
+      minor: match[3] ? Number(match[3]) : 0
+    };
+  }
+
+  function requireArray(value, name) {
+    if (!Array.isArray(value)) throw new Error(`${name} must be an array`);
+  }
+
+  function requireString(value, name) {
+    if (typeof value !== "string" || !value.trim()) throw new Error(`${name} must be a non-empty string`);
+  }
+
+  function requirePlainText(value, name, maxLength) {
+    requireString(value, name);
+    if (value.length > maxLength) throw new Error(`${name} exceeds ${maxLength} characters`);
+    if (/[<>]/.test(value)) throw new Error(`${name} must be plain text without HTML`);
+  }
+
+  function rejectUnknownKeys(value, allowed, path) {
+    Object.keys(value || {}).forEach((key) => {
+      if (!allowed.includes(key)) throw new Error(`${path}.${key} is not allowed`);
+    });
+  }
+
+  function validateTable(data) {
+    rejectUnknownKeys(data, ["title", "subtitle", "caption", "columns", "rows", "filterable"], "table");
+    if (data.title) requirePlainText(data.title, "table.title", 100);
+    if (data.subtitle) requirePlainText(data.subtitle, "table.subtitle", 160);
+    if (data.caption) requirePlainText(data.caption, "table.caption", 180);
+    requireArray(data.columns, "table.columns");
+    requireArray(data.rows, "table.rows");
+    if (data.columns.length < 1 || data.columns.length > MAX_COLUMNS) throw new Error(`table.columns must contain 1-${MAX_COLUMNS} items`);
+    if (data.rows.length > MAX_ROWS) throw new Error(`table.rows must contain at most ${MAX_ROWS} rows`);
+    data.columns.forEach((column, index) => requirePlainText(column, `table.columns[${index}]`, 80));
+    data.rows.forEach((row, rowIndex) => {
+      requireArray(row, `table.rows[${rowIndex}]`);
+      if (row.length !== data.columns.length) throw new Error(`table.rows[${rowIndex}] must match columns length`);
+      row.forEach((cell, cellIndex) => {
+        if (typeof cell !== "string" && typeof cell !== "number" && typeof cell !== "boolean") {
+          throw new Error(`table.rows[${rowIndex}][${cellIndex}] must be string, number, or boolean`);
+        }
+        if (String(cell).length > MAX_TEXT_LENGTH) throw new Error(`table.rows[${rowIndex}][${cellIndex}] exceeds ${MAX_TEXT_LENGTH} characters`);
+        if (/[<>]/.test(String(cell))) throw new Error(`table.rows[${rowIndex}][${cellIndex}] must not contain HTML`);
+      });
+    });
+  }
+
+  function validateMetricCards(data) {
+    rejectUnknownKeys(data, ["title", "items"], "metric-cards");
+    if (data.title) requirePlainText(data.title, "metric-cards.title", 100);
+    requireArray(data.items, "metric-cards.items");
+    if (data.items.length < 1 || data.items.length > MAX_METRICS) throw new Error(`metric-cards.items must contain 1-${MAX_METRICS} items`);
+    data.items.forEach((item, index) => {
+      rejectUnknownKeys(item, ["label", "value", "note", "tone"], `metric-cards.items[${index}]`);
+      requirePlainText(item.label, `metric-cards.items[${index}].label`, 80);
+      requirePlainText(item.value, `metric-cards.items[${index}].value`, 40);
+      if (item.note) requirePlainText(item.note, `metric-cards.items[${index}].note`, 120);
+      if (item.tone && !["neutral", "good", "warn", "bad"].includes(item.tone)) {
+        throw new Error(`metric-cards.items[${index}].tone must be neutral, good, warn, or bad`);
+      }
+    });
+  }
+
+  function validateCallout(data) {
+    rejectUnknownKeys(data, ["tone", "title", "body", "items"], "callout");
+    if (data.tone && !["info", "success", "warning", "danger"].includes(data.tone)) {
+      throw new Error("callout.tone must be info, success, warning, or danger");
+    }
+    requirePlainText(data.title, "callout.title", 120);
+    requirePlainText(data.body, "callout.body", 900);
+    if (data.items !== undefined) {
+      requireArray(data.items, "callout.items");
+      if (data.items.length > 8) throw new Error("callout.items must contain at most 8 items");
+      data.items.forEach((item, index) => requirePlainText(item, `callout.items[${index}]`, 180));
+    }
+  }
+
+  function componentShell(title, subtitle, controls, body) {
+    return `
+      <section class="ai-component">
+        <div class="ai-component-header">
+          <div>
+            <h3 class="ai-component-title">${escapeHtml(title)}</h3>
+            ${subtitle ? `<div class="ai-component-subtitle">${escapeHtml(subtitle)}</div>` : ""}
+          </div>
+          ${controls || ""}
+        </div>
+        <div class="ai-component-body">${body}</div>
+      </section>
+    `;
+  }
+
+  function renderBadge(value) {
+    const normalized = String(value).toLowerCase();
+    let cls = "";
+    if (/(高|强|推荐|high|good|yes)/i.test(normalized)) cls = " high";
+    if (/(中|medium|mixed|需控制)/i.test(normalized)) cls = " medium";
+    if (/(低|弱|不推荐|low|bad|no)/i.test(normalized)) cls = " low";
+    return `<span class="ai-badge${cls}">${escapeHtml(value)}</span>`;
+  }
+
+  function renderTable(type, data) {
+    validateTable(data);
+    requireArray(data.columns, "columns");
+    requireArray(data.rows, "rows");
+    const id = `tbl-${Math.random().toString(36).slice(2)}`;
+    const headers = data.columns.map((column) => `<th>${escapeHtml(column)}</th>`).join("");
+    const rows = data.rows.map((row) => {
+      requireArray(row, "row");
+      return `<tr>${row.map((cell) => `<td>${typeof cell === "string" && cell.length < 16 ? renderBadge(cell) : inlineMarkdown(cell)}</td>`).join("")}</tr>`;
+    }).join("");
+    const controls = data.filterable === false ? "" : `<input class="ai-search" type="search" placeholder="筛选..." data-ai-filter="${id}">`;
+    const title = data.title || "数据表";
+    const subtitle = data.subtitle || "源数据来自 Markdown fenced code block";
+    return componentShell(title, subtitle, controls, `
+      <div class="ai-table-wrap">
+        <table class="ai-table" id="${id}">
+          <thead><tr>${headers}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    `);
+  }
+
+  function renderDecision(data) {
+    requireString(data.recommendation, "recommendation");
+    requireString(data.reason, "reason");
+    const risks = Array.isArray(data.risks) ? data.risks : [];
+    const riskHtml = risks.map((risk) => `
+      <div class="ai-risk">
+        <strong>${escapeHtml(risk.title || "风险")}</strong>
+        <p>${escapeHtml(risk.mitigation || risk.description || "")}</p>
+      </div>
+    `).join("");
+    return componentShell(data.title || "最终决策", data.subtitle || "Renderer 负责结构化呈现", "", `
+      <div class="ai-decision">
+        <div class="ai-decision-main">
+          <div class="ai-decision-label">Recommendation</div>
+          <strong>${escapeHtml(data.recommendation)}</strong>
+          <p>${inlineMarkdown(data.reason)}</p>
+        </div>
+        <div class="ai-risk-list">${riskHtml}</div>
+      </div>
+    `);
+  }
+
+  function renderMatrix(data) {
+    requireArray(data.items, "items");
+    const cards = data.items.map((item) => {
+      const score = Math.max(0, Math.min(100, Number(item.score || 0)));
+      return `
+        <div class="ai-matrix-card">
+          <strong>${escapeHtml(item.name || "Item")}</strong>
+          <div>${escapeHtml(item.summary || "")}</div>
+          <div class="ai-score" aria-label="score ${score}"><span style="width:${score}%"></span></div>
+          <div class="ai-component-subtitle">${escapeHtml(item.note || "")}</div>
+        </div>
+      `;
+    }).join("");
+    return componentShell(data.title || "判断矩阵", data.subtitle || "", "", `<div class="ai-matrix">${cards}</div>`);
+  }
+
+  function renderMetricCards(data) {
+    validateMetricCards(data);
+    requireArray(data.items, "items");
+    const cards = data.items.map((item) => {
+      const tone = ["good", "warn", "bad"].includes(item.tone) ? item.tone : "";
+      return `
+        <div class="ai-metric-card ${tone}">
+          <span class="ai-metric-label">${escapeHtml(item.label || "Metric")}</span>
+          <span class="ai-metric-value">${escapeHtml(item.value || "-")}</span>
+          <span class="ai-metric-note">${escapeHtml(item.note || "")}</span>
+        </div>
+      `;
+    }).join("");
+    return `<section class="ai-metric-grid" aria-label="${escapeHtml(data.title || "摘要指标")}">${cards}</section>`;
+  }
+
+  function renderCallout(data) {
+    validateCallout(data);
+    const tone = data.tone || "info";
+    const items = Array.isArray(data.items) && data.items.length
+      ? `<ul>${data.items.map((item) => `<li>${inlineMarkdown(item)}</li>`).join("")}</ul>`
+      : "";
+    return `
+      <section class="ai-component ai-callout ai-callout-${tone}">
+        <div class="ai-component-header">
+          <div>
+            <h3 class="ai-component-title">${escapeHtml(data.title)}</h3>
+          </div>
+        </div>
+        <div class="ai-component-body">
+          <p>${inlineMarkdown(data.body)}</p>
+          ${items}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderTabs(data) {
+    requireArray(data.tabs, "tabs");
+    const id = `tabs-${Math.random().toString(36).slice(2)}`;
+    const tabs = data.tabs.map((tab, index) => `
+      <button class="ai-tab" type="button" role="tab" aria-selected="${index === 0 ? "true" : "false"}" data-ai-tab="${id}-${index}">
+        ${escapeHtml(tab.label || `Tab ${index + 1}`)}
+      </button>
+    `).join("");
+    const panels = data.tabs.map((tab, index) => `
+      <div class="ai-tab-panel ${index === 0 ? "active" : ""}" role="tabpanel" data-ai-panel="${id}-${index}">
+        ${Array.isArray(tab.points) ? `<ul>${tab.points.map((point) => `<li>${inlineMarkdown(point)}</li>`).join("")}</ul>` : `<p>${inlineMarkdown(tab.content || "")}</p>`}
+      </div>
+    `).join("");
+    return `
+      <section class="ai-component">
+        <div class="ai-component-header">
+          <div>
+            <h3 class="ai-component-title">${escapeHtml(data.title || "分层说明")}</h3>
+            ${data.subtitle ? `<div class="ai-component-subtitle">${escapeHtml(data.subtitle)}</div>` : ""}
+          </div>
+        </div>
+        <div class="ai-tabs" role="tablist">${tabs}</div>
+        <div class="ai-component-body">${panels}</div>
+      </section>
+    `;
+  }
+
+  function renderFlow(data) {
+    requireArray(data.steps, "steps");
+    const steps = data.steps.map((step) => `
+      <div class="ai-flow-step">
+        <strong>${escapeHtml(step.title || "Step")}</strong>
+        <p>${escapeHtml(step.description || "")}</p>
+      </div>
+    `).join("");
+    return componentShell(data.title || "处理流程", data.subtitle || "", "", `<div class="ai-flow">${steps}</div>`);
+  }
+
+  COMPONENTS.set("table@1", renderTable);
+  COMPONENTS.set("metric-cards@1", (_type, data) => renderMetricCards(data));
+  COMPONENTS.set("callout@1", (_type, data) => renderCallout(data));
+
+  function renderToken(token, headingCounts) {
+    if (token.type === "heading") {
+      const base = slugify(token.text);
+      headingCounts[base] = (headingCounts[base] || 0) + 1;
+      const id = headingCounts[base] === 1 ? base : `${base}-${headingCounts[base]}`;
+      return `<h${token.depth} id="${id}">${inlineMarkdown(token.text)}</h${token.depth}>`;
+    }
+    if (token.type === "paragraph") return `<p>${inlineMarkdown(token.text)}</p>`;
+    if (token.type === "list") {
+      const tag = token.ordered ? "ol" : "ul";
+      return `<${tag}>${token.items.map((item) => `<li>${inlineMarkdown(item)}</li>`).join("")}</${tag}>`;
+    }
+    if (token.type === "code") {
+      const aio = parseAioInfo(token.lang);
+      if (aio) {
+        try {
+          if (!COMPONENTS.has(aio.id)) throw new Error(`${token.lang} is not supported by this runtime`);
+          const data = parseJsonBlock(token.lang, token.code);
+          return COMPONENTS.get(aio.id)(aio.id, data);
+        } catch (error) {
+          return `
+            <section class="ai-component">
+              <div class="ai-component-body">
+                <div class="ai-error">组件 ${escapeHtml(token.lang)} 校验失败：${escapeHtml(error.message)}</div>
+                <pre><code>${escapeHtml(token.code)}</code></pre>
+              </div>
+            </section>
+          `;
+        }
+      }
+      return `<pre><code>${escapeHtml(token.code)}</code></pre>`;
+    }
+    return "";
+  }
+
+  function buildToc(tokens) {
+    const counts = {};
+    const items = [];
+    tokens.filter((token) => token.type === "heading" && token.depth <= 2).forEach((token) => {
+      const base = slugify(token.text);
+      counts[base] = (counts[base] || 0) + 1;
+      const id = counts[base] === 1 ? base : `${base}-${counts[base]}`;
+      items.push(`<a href="#${id}">${escapeHtml(token.text)}</a>`);
+    });
+    return `<nav class="ai-toc"><strong>目录</strong>${items.join("")}</nav>`;
+  }
+
+  function bindInteractions(root) {
+    root.querySelectorAll("[data-ai-filter]").forEach((input) => {
+      input.addEventListener("input", () => {
+        const table = root.querySelector(`#${CSS.escape(input.dataset.aiFilter)}`);
+        if (!table) return;
+        const query = input.value.trim().toLowerCase();
+        table.querySelectorAll("tbody tr").forEach((row) => {
+          row.hidden = query && !row.textContent.toLowerCase().includes(query);
+        });
+      });
+    });
+
+    root.querySelectorAll("[data-ai-tab]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const key = button.dataset.aiTab;
+        const group = key.replace(/-\d+$/, "");
+        root.querySelectorAll(`[data-ai-tab^="${CSS.escape(group)}-"]`).forEach((tab) => {
+          tab.setAttribute("aria-selected", String(tab === button));
+        });
+        root.querySelectorAll(`[data-ai-panel^="${CSS.escape(group)}-"]`).forEach((panel) => {
+          panel.classList.toggle("active", panel.dataset.aiPanel === key);
+        });
+      });
+    });
+  }
+
+  function render(markdown, options) {
+    installStyles();
+    document.body.classList.add("ai-output-body");
+    const target = typeof options.target === "string" ? document.querySelector(options.target) : options.target;
+    if (!target) throw new Error("AI Output target not found");
+    const tokens = parseMarkdown(markdown);
+    const headingCounts = {};
+    const html = tokens.map((token) => renderToken(token, headingCounts)).join("\n");
+    target.innerHTML = `
+      <div class="ai-shell">
+        <header class="ai-topbar">
+          <div class="ai-topbar-inner">
+            <div class="ai-brand">
+              <strong>${escapeHtml(options.title || "AI Output Runtime")}</strong>
+              <span>CommonMark source, whitelisted data blocks, deterministic rendering</span>
+            </div>
+            <div class="ai-actions">
+              <button class="ai-button" type="button" data-ai-copy-source>复制源稿</button>
+              <button class="ai-button" type="button" data-ai-toggle-source>查看源稿</button>
+              <button class="ai-button" type="button" data-ai-print>打印 / PDF</button>
+            </div>
+          </div>
+        </header>
+        <main class="ai-layout">
+          <article class="ai-document">${html}</article>
+          ${buildToc(tokens)}
+        </main>
+        <section class="ai-source" data-ai-source-panel>
+          <pre><code>${escapeHtml(markdown)}</code></pre>
+        </section>
+      </div>
+    `;
+    bindInteractions(target);
+    const sourcePanel = target.querySelector("[data-ai-source-panel]");
+    target.querySelector("[data-ai-toggle-source]").addEventListener("click", () => {
+      sourcePanel.classList.toggle("visible");
+    });
+    target.querySelector("[data-ai-copy-source]").addEventListener("click", async () => {
+      if (!navigator.clipboard) return;
+      await navigator.clipboard.writeText(markdown);
+    });
+    target.querySelector("[data-ai-print]").addEventListener("click", () => {
+      window.print();
+    });
+  }
+
+  window.AIOutputRuntime = {
+    render,
+    parseMarkdown,
+    components: Array.from(COMPONENTS.keys())
+  };
+})();

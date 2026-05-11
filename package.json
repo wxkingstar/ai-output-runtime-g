@@ -1,0 +1,31 @@
+{
+  "name": "ai-output-runtime-g",
+  "version": "0.1.0",
+  "description": "Claude Code and agent skill for AI Output Runtime v0.1.",
+  "type": "module",
+  "bin": {
+    "aio": "./scripts/aio.mjs"
+  },
+  "scripts": {
+    "check": "node --check scripts/aio.mjs && node scripts/aio.mjs validate examples/valid-v0.1.md",
+    "render": "node scripts/aio.mjs render examples/valid-v0.1.md --out dist/valid.html",
+    "test": "npm run check && (node scripts/aio.mjs validate examples/invalid-html.md && exit 1 || exit 0)"
+  },
+  "keywords": [
+    "claude-code",
+    "skills",
+    "ai-output",
+    "markdown",
+    "aio"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wxkingstar/ai-output-runtime-g.git"
+  },
+  "homepage": "https://github.com/wxkingstar/ai-output-runtime-g#readme",
+  "bugs": {
+    "url": "https://github.com/wxkingstar/ai-output-runtime-g/issues"
+  },
+  "author": "wxkingstar",
+  "license": "MIT"
+}

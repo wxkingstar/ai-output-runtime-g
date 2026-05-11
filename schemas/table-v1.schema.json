@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-output.dev/schemas/table-v1.schema.json",
+  "title": "aio:table@1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "title": { "type": "string", "maxLength": 100, "pattern": "^[^<>]*$" },
+    "subtitle": { "type": "string", "maxLength": 160, "pattern": "^[^<>]*$" },
+    "caption": { "type": "string", "maxLength": 180, "pattern": "^[^<>]*$" },
+    "filterable": { "type": "boolean" },
+    "columns": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": { "type": "string", "maxLength": 80, "pattern": "^[^<>]*$" }
+    },
+    "rows": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "array",
+        "items": {
+          "anyOf": [
+            { "type": "string", "maxLength": 600, "pattern": "^[^<>]*$" },
+            { "type": "number" },
+            { "type": "boolean" }
+          ]
+        }
+      }
+    }
+  },
+  "required": ["columns", "rows"]
+}
+
