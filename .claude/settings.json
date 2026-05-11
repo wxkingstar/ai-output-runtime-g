@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath // empty' | { read -r f; if [[ \"$f\" == *examples/*.md ]]; then node scripts/aio.mjs validate \"$f\"; fi; }"
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath // empty' | { read -r f; if [[ \"$f\" == *assets/ai-output-runtime.js || \"$f\" == *scripts/aio.mjs ]]; then node --check \"$f\"; fi; }"
+          }
+        ]
+      }
+    ]
+  }
+}

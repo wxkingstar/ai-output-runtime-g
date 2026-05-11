@@ -1,3 +1,5 @@
 dist/
 node_modules/
 .gstack/
+.DS_Store
+**/.DS_Store
