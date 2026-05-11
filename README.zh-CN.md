@@ -3,9 +3,10 @@
 > **AI 报告的「数据契约」。** Markdown 保留为源稿。一份 ~38 KB 的安全 runtime 负责渲染。AI 不写 HTML、CSS、也不写任何 JavaScript。
 
 [![CI](https://github.com/wxkingstar/ai-output-runtime/actions/workflows/ci.yml/badge.svg)](https://github.com/wxkingstar/ai-output-runtime/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/aio-v0.2.0-2563eb)](https://github.com/wxkingstar/ai-output-runtime/releases/tag/v0.2.0)
+[![Version](https://img.shields.io/badge/aio-v0.4.3-2563eb)](https://github.com/wxkingstar/ai-output-runtime/releases/tag/v0.4.3)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![CDN](https://img.shields.io/badge/jsDelivr-CDN-orange)](https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.4.3/assets/ai-output-runtime.js)
+[![skills.sh](https://skills.sh/b/wxkingstar/ai-output-runtime)](https://skills.sh/wxkingstar/ai-output-runtime)
 
 [🇬🇧 English](README.md) · 🇨🇳 **中文** · [🇯🇵 日本語](README.ja.md)
 

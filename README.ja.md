@@ -3,9 +3,10 @@
 > **AI 生成レポート向けの「データ契約」。** Markdown はソースのまま。約 38 KB の安全なランタイムが描画を担当します。AI は HTML、CSS、JavaScript を一切書きません。
 
 [![CI](https://github.com/wxkingstar/ai-output-runtime/actions/workflows/ci.yml/badge.svg)](https://github.com/wxkingstar/ai-output-runtime/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/aio-v0.2.0-2563eb)](https://github.com/wxkingstar/ai-output-runtime/releases/tag/v0.2.0)
+[![Version](https://img.shields.io/badge/aio-v0.4.3-2563eb)](https://github.com/wxkingstar/ai-output-runtime/releases/tag/v0.4.3)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![CDN](https://img.shields.io/badge/jsDelivr-CDN-orange)](https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.4.3/assets/ai-output-runtime.js)
+[![skills.sh](https://skills.sh/b/wxkingstar/ai-output-runtime)](https://skills.sh/wxkingstar/ai-output-runtime)
 
 [🇬🇧 English](README.md) · [🇨🇳 中文](README.zh-CN.md) · 🇯🇵 **日本語**
 
