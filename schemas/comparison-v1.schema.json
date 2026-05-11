@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-output.dev/schemas/comparison-v1.schema.json",
+  "title": "aio:comparison@1",
+  "description": "Structural shape for aio:comparison@1. The CLI at scripts/aio.mjs is the source of truth for invariants — notably criteria[i].values.length must equal options.length, and recommended must match one of the options.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "title":    { "type": "string", "maxLength": 100, "pattern": "^[^<>]*$" },
+    "subtitle": { "type": "string", "maxLength": 160, "pattern": "^[^<>]*$" },
+    "asOf":     { "type": "string", "maxLength": 40,  "pattern": "^[^<>]*$" },
+    "options": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 6,
+      "items": { "type": "string", "maxLength": 60, "pattern": "^[^<>]*$" }
+    },
+    "recommended": { "type": "string", "maxLength": 60, "pattern": "^[^<>]*$" },
+    "criteria": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 14,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label":  { "type": "string", "maxLength": 80, "pattern": "^[^<>]*$" },
+          "values": { "type": "array", "items": { "type": ["string", "number", "boolean"] } },
+          "weight": { "type": "number" },
+          "tone":   { "type": "string", "enum": ["good", "warn", "bad", "neutral"] }
+        },
+        "required": ["label", "values"]
+      }
+    }
+  },
+  "required": ["options", "criteria"]
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-output.dev/schemas/heatmap-v1.schema.json",
+  "title": "aio:heatmap@1",
+  "description": "Structural shape for aio:heatmap@1. The CLI at scripts/aio.mjs is the source of truth for invariants — notably rows.length === yLabels.length and rows[i].length === xLabels.length.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "title":    { "type": "string", "maxLength": 100, "pattern": "^[^<>]*$" },
+    "subtitle": { "type": "string", "maxLength": 160, "pattern": "^[^<>]*$" },
+    "asOf":     { "type": "string", "maxLength": 40,  "pattern": "^[^<>]*$" },
+    "format":   { "type": "string", "pattern": "^(?:raw|number|percent|compact|currency:[A-Z]{3})$" },
+    "tone":     { "type": "string", "enum": ["accent", "good", "warn", "bad", "neutral"] },
+    "xLabels": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": { "type": "string", "maxLength": 24, "pattern": "^[^<>]*$" }
+    },
+    "yLabels": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": { "type": "string", "maxLength": 24, "pattern": "^[^<>]*$" }
+    },
+    "rows": {
+      "type": "array",
+      "items": { "type": "array", "items": { "type": "number" } }
+    }
+  },
+  "required": ["xLabels", "yLabels", "rows"]
+}

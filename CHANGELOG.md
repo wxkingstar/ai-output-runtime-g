@@ -2,6 +2,61 @@
 
 All notable changes to AI Output Runtime are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## v0.4.0 — 2026-05-11
+
+A major shape expansion: 11 new candidate components covering business-report scenarios (weekly/monthly/quarterly reviews, postmortems, KPI dashboards, finance bridges, conversion analysis, prioritization), a modular language pack architecture for code-block syntax highlighting, and reader-experience upgrades. Backward-compatible: every v0.2.x markdown renders unchanged.
+
+### Added
+
+- **Six P0 candidate components** for business reporting:
+  - `aio:report-header@1` — hero block with title / period / author / status / dataAsOf / classification / badges. Auto-emitted from markdown YAML frontmatter.
+  - `aio:trend-card@1` — metric cards with delta, sparkline, locale-aware number formatting (`format: percent | currency:CCY | compact | number | raw`).
+  - `aio:status-grid@1` — state-of-the-world cards (good/warn/bad/neutral/info) with colored top border + status dot.
+  - `aio:timeline@1` — chronological events with tone-colored dots and time stamps. Up to 30 items.
+  - `aio:action-items@1` — owned follow-ups with status / priority / due date. Overdue (`due < today` and not `done`) is auto-highlighted red.
+  - `aio:comparison@1` — multi-option scoring matrix with optional `recommended` column highlight and weights.
+- **Five P1 chart components** for analytical reports:
+  - `aio:gauge@1` — semicircle KPI/OKR attainment gauges (auto-tone from progress vs target).
+  - `aio:funnel@1` — conversion funnel with auto-computed step + overall conversion percentages.
+  - `aio:waterfall@1` — P&L bridge / variance / attribution chart with `start | up | down | subtotal | end` bar kinds.
+  - `aio:heatmap@1` — 2D density grid (up to 32×32) with opacity scaling and color legend.
+  - `aio:matrix@1` — 2×2 quadrant scatter (risk / RICE / BCG) with optional quadrant labels.
+- **Modular code-block syntax highlighting** (`assets/lang/*.js`):
+  - Six languages **always inlined** in the runtime: `json`, `bash`, `js+ts`, `python`, `yaml`, `diff`.
+  - Twenty-four languages **lazy-loaded on demand** via jsDelivr: `go`, `rust`, `php`, `ruby`, `java`, `kotlin`, `swift`, `c`, `cpp`, `csharp`, `sql`, `html`, `css`, `xml`, `dockerfile`, `toml`, `ini`, `lua`, `perl`, `r`, `scala`, `dart`, `regex`, `graphql` (with aliases — e.g. `golang`, `c++`, `mysql`, `htm`, `svg`).
+  - New `window.AIOutputRuntime.registerLanguage(spec)` API; runtime queues registrations that arrive before it loads.
+  - New `langBaseUrl` render option; runtime auto-detects from `document.currentScript.src` when present.
+  - `assets/lang/index.json` manifest (24 languages with SHA-384 integrity hints).
+  - Code blocks now have a header bar with language tag + Copy button (1.2s "Copied" toast).
+- **Markdown YAML frontmatter** (`---\ntitle: ...\nperiod: ...\n---`) auto-renders as `aio:report-header@1`. Ignored when an explicit `aio:report-header@1` block is present.
+- **Locale-aware number formatting** via `Intl.NumberFormat` for `trend-card`, `gauge`, `funnel`, `waterfall`, `heatmap`. CLI `--lang` flag selects the locale.
+- **`asOf` field** on every new candidate component, rendered as a discreet top-right "data as of …" stamp.
+- **Skim mode** toggle in the top bar: dims narrative paragraphs to 35% opacity so structured blocks (cards / charts / tables / callouts) read first.
+- **Top-bar Copy source** button now gives a 1.2s "Copied" visual confirmation.
+- **CLI inline-runtime** auto-inlines used language modules so the resulting HTML opens via `file://` with no network calls.
+- New `--lang-base-url` CLI flag overrides the default language-module CDN base.
+- New `npm run gen:lang-manifest` script regenerates `assets/lang/index.json`.
+- Two new comprehensive examples: `examples/weekly-report-demo.md` (P0 six-component weekly business report) and `examples/dashboard-demo.md` (P1 five-chart quarterly review). Both wired into `npm test` and `npm run render:site`.
+- `docs/demo-weekly.html` and `docs/demo-dashboard.html` join the public Pages site.
+
+### Changed
+
+- Component header now uses `justify-content: flex-start`: the sequence-number chip stays left-of the title (previously the title was pushed to the right). Table search box keeps right alignment via `margin-left: auto`.
+- Runtime grew from 47.7 KB → 121.1 KB raw (gzipped 11.9 KB → 26.1 KB) reflecting the eleven new components + tokenizer base + UX features.
+- `RUNTIME_VERSION` constant exposed on `window.AIOutputRuntime.version`.
+- `aio-registry.json` candidate list expanded with eleven new entries; stable list unchanged (`table@1`, `metric-cards@1`, `callout@1`).
+
+### Security
+
+- `isSafeLangUrl` (runtime) uses an explicit ASCII whitelist instead of a control-byte range regex — same outcome, safer to inline.
+- All new components reject `<` and `>` in every string field (consistent with the existing AIO rule).
+- Frontmatter parser only accepts top-level `key: value` lines and bails on the first malformed line; nested structures are not supported on purpose to keep the surface narrow.
+
+### Compatibility
+
+- All v0.2.x markdown renders identically (no breaking schema changes). The four original stable components retain their exact field set.
+- CDN-pinned `@v0.2.x` URLs continue to serve the bytes they shipped with. Update production embeds to `@v0.4.0` to opt in.
+
 ## v0.2.2 — 2026-05-11
 
 ### Changed

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-output.dev/schemas/trend-card-v1.schema.json",
+  "title": "aio:trend-card@1",
+  "description": "Structural shape for aio:trend-card@1. The CLI at scripts/aio.mjs is the source of truth for invariants (e.g. number-vs-string value typing).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "title": { "type": "string", "maxLength": 100, "pattern": "^[^<>]*$" },
+    "asOf":  { "type": "string", "maxLength": 40,  "pattern": "^[^<>]*$" },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label":  { "type": "string", "maxLength": 80,  "pattern": "^[^<>]*$" },
+          "value":  { "type": ["string", "number"] },
+          "format": { "type": "string", "pattern": "^(?:raw|number|percent|compact|currency:[A-Z]{3})$" },
+          "delta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "value":     { "type": "number" },
+              "direction": { "type": "string", "enum": ["up", "down", "flat"] },
+              "format":    { "type": "string", "pattern": "^(?:raw|number|percent|compact|currency:[A-Z]{3})$" },
+              "label":     { "type": "string", "maxLength": 40, "pattern": "^[^<>]*$" }
+            },
+            "required": ["value"]
+          },
+          "spark": { "type": "array", "minItems": 2, "maxItems": 60, "items": { "type": "number" } },
+          "tone":  { "type": "string", "enum": ["neutral", "good", "warn", "bad"] },
+          "note":  { "type": "string", "maxLength": 140, "pattern": "^[^<>]*$" }
+        },
+        "required": ["label", "value"]
+      }
+    }
+  },
+  "required": ["items"]
+}

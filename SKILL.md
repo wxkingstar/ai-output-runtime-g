@@ -123,6 +123,148 @@ Constraints to respect:
 - `tone` (optional) is one of `neutral` / `good` / `warn` / `bad` / `accent`. The renderer chooses the colour.
 - No stacked variants, no scatter, no annotations, no log scale. If the data doesn't fit these primitives, fall back to a table.
 
+### `aio:trend-card@1` (candidate)
+
+Headline metrics with delta + sparkline. Use this — not `metric-cards@1` — whenever change matters (weekly / monthly / quarterly reports, KPI dashboards, business reviews).
+
+- `items[].value`: number (preferred, formatted via `format`) or short string.
+- `format`: one of `raw`, `number`, `percent`, `compact`, `currency:CCY` (ISO 4217). Rendered with the document locale.
+- `delta`: `{ value, direction?, format?, label? }`. `direction` is `up` | `down` | `flat` (inferred from sign if omitted).
+- `spark`: 2-60 finite numbers — small SVG trend.
+- `tone`: `neutral` / `good` / `warn` / `bad`.
+- Optional doc-level `asOf` stamp (top-right "data as of …").
+
+### `aio:status-grid@1` (candidate)
+
+State-of-the-world cards: service health, project portfolio, business line scorecards. Each `item` has `label`, `status` (`good`/`warn`/`bad`/`neutral`/`info`), optional headline `value`, and optional `note`. Up to 12 cards.
+
+Use this when the question is "what's red?", not "how much did it move?". For change-over-time use `trend-card@1`.
+
+### `aio:report-header@1` (candidate)
+
+Hero block for formal reports. `title` required; optional `subtitle`, `period`, `author`, `status` (`draft`/`review`/`final`/`archived`), `dataAsOf`, `classification` (`public`/`internal`/`confidential`/`restricted`), and up to 6 extra `badges`.
+
+**Markdown frontmatter shortcut**: instead of writing the block, you can put the metadata in a YAML frontmatter block at the very top of the markdown. The CLI prepends an `aio:report-header@1` block automatically:
+
+```markdown
+---
+title: Q1 Business Review
+period: 2026 Q1
+author: Wang Xin
+status: final
+data-as-of: 2026-04-30
+classification: internal
+---
+
+# 本周亮点
+...
+```
+
+If both frontmatter and an explicit `aio:report-header@1` block exist, the frontmatter is ignored (no duplicates).
+
+### `aio:timeline@1` (candidate)
+
+Chronological events. Each `item` has `time` (free-form string), `title`, optional `body` and `tone` (`info`/`good`/`warn`/`bad`/`neutral`). Items render in source order — never sorted. Up to 30 items.
+
+Use for: incident timelines, postmortems, weekly highlights, retrospective recap, release history.
+
+### `aio:action-items@1` (candidate)
+
+Follow-up lists. Each `item` has `task` plus optional `owner`, `due`, `status` (`todo`/`doing`/`done`/`blocked`), `priority` (`P0`–`P3`). Items where `due < today` and `status != done` auto-render with overdue highlight. Up to 30 items.
+
+Use for: postmortem action items, retro next-steps, weekly TODOs, audit findings.
+
+### `aio:comparison@1` (candidate)
+
+Multi-option comparison matrix. `options` (2-6 strings) become columns; `criteria[]{ label, values, weight?, tone? }` are rows. Optional `recommended` matches one option and highlights its column with a green border + ★ badge. `values[]` length must equal `options[]` length (CLI enforces this).
+
+Use for: solution selection, competitor comparison, vendor evaluation, RFP scorecard.
+
+### `aio:gauge@1` (candidate)
+
+KPI / OKR attainment gauges (semicircle arcs). `items[]{ label, value, target?, min?, max?, format?, tone?, note? }`. Up to 8 gauges. Auto-tone from progress vs target (good ≥ 90%, warn ≥ 70%, bad otherwise) unless `tone` is set. `format` accepts `percent`, `currency:CCY`, etc. and the value is locale-formatted.
+
+Use for: KPI dashboards, OKR scorecards, capacity utilization, attainment progress.
+
+### `aio:funnel@1` (candidate)
+
+Conversion funnel. `stages[]{ label, value, tone?, note? }` (2-8 stages). Stage values must be monotonic non-increasing (CLI enforces). The runtime auto-computes "step" (vs previous) and "overall" (vs first) conversion percentages.
+
+Use for: lead → customer funnels, signup → activation → paid, multi-step UX flows.
+
+### `aio:waterfall@1` (candidate)
+
+Additive/subtractive breakdown chart (P&L bridge). `bars[]{ label, value, kind, note? }` where kind ∈ `start | up | down | subtotal | end`. First bar must be `start`. `up`/`down` stack on the running total; `subtotal`/`end` reset to absolute zero baseline.
+
+Use for: P&L bridge, variance analysis, attribution decomposition, period-over-period change explanation.
+
+### `aio:heatmap@1` (candidate)
+
+2D density grid. `xLabels[]` × `yLabels[]` (up to 32 × 32) plus a matching `rows[][]` of finite numbers. Cell opacity scales from 0.08 to 1.0 between min and max. `tone` picks the base color (`accent`/`good`/`warn`/`bad`/`neutral`).
+
+Use for: orders by hour × day, sales by region × category, error rate by service × endpoint, retention cohort × week.
+
+### `aio:matrix@1` (candidate)
+
+2×2 quadrant analysis. Items plotted as labeled dots on an `[xMin, xMax]` × `[yMin, yMax]` plane (default 0–10). Optional `quadrants` array supplies 4 strings labeling top-left / top-right / bottom-left / bottom-right.
+
+Use for: risk matrix (likelihood × impact), prioritization (impact × effort), BCG growth-share, RICE scores, employee performance.
+
+## Output policy for the new components
+
+Default report skeleton when the request looks like a structured business report:
+
+1. **Frontmatter (or `aio:report-header@1`)** with title, period, author, status, dataAsOf.
+2. **One paragraph** of prose framing (1–3 sentences).
+3. **`aio:trend-card@1`** for headline metrics with WoW/MoM/YoY deltas.
+4. **`aio:status-grid@1`** if multiple sub-units/services have separate state.
+5. **`aio:chart@1` or `aio:table@1`** for detail data when needed.
+6. **`aio:timeline@1`** for "what happened this period" or postmortem chronology.
+7. **`aio:comparison@1`** for decision matrices.
+8. **`aio:action-items@1`** for next-steps / follow-ups.
+9. **`aio:callout@1`** for the final verdict / risk warning.
+
+Picking between similar components:
+
+| Want to show | Use |
+|---|---|
+| Static numbers | `metric-cards@1` |
+| Numbers + delta + trend | `trend-card@1` |
+| State (green/yellow/red) of items | `status-grid@1` |
+| Row-shaped data | `table@1` |
+| Side-by-side options on multiple criteria | `comparison@1` |
+| Time-ordered events | `timeline@1` |
+| Owned follow-ups with dates | `action-items@1` |
+| Generic line/bar/area/pie/donut | `chart@1` |
+| KPI/OKR attainment progress (semicircle) | `gauge@1` |
+| Sequential conversion / drop-off | `funnel@1` |
+| P&L bridge / variance / attribution | `waterfall@1` |
+| 2D intensity grid | `heatmap@1` |
+| Risk matrix / 2×2 prioritization | `matrix@1` |
+| Final recommendation / verdict | `callout@1` |
+
+## Reader-experience features available
+
+The runtime exposes a `Skim` toggle in the top bar that dims narrative paragraphs so the structured blocks (cards / charts / tables / callouts) read first — useful for stakeholders who only have 10 seconds. You don't need to author anything special for this to work; it activates on any AIO document.
+
+Numbers in `trend-card@1` are locale-formatted (`Intl.NumberFormat`) based on the document `lang`. Pass the right `lang` to the CLI (`--lang en` / `--lang zh-CN` / `--lang ja`) so currency separators and decimal marks render correctly.
+
+## Fenced code blocks (syntax highlight)
+
+The runtime ships dark code blocks with a header bar (language tag + Copy button) and built-in syntax highlighting. **Just write fenced code as usual** — no special block type, no preload step. Highlighting is rendering-time only; it never changes block contents.
+
+**Always inlined in the runtime** (zero extra fetch):
+`json`, `bash` (`sh`/`shell`/`zsh`/`console`), `js` (`javascript`/`jsx`/`mjs`/`cjs`), `ts` (`typescript`/`tsx`), `python` (`py`), `yaml` (`yml`), `diff` (`patch`).
+
+**Lazy-loaded from CDN on demand** (`assets/lang/<name>.js`, ~1–3 KB each, fetched the first time that language appears on a page; subsequent visits hit the browser cache):
+`go` (`golang`), `rust` (`rs`), `php`, `ruby` (`rb`), `java`, `kotlin` (`kt`), `swift`, `c`, `cpp` (`c++`/`cxx`/`cc`/`hpp`), `csharp` (`cs`/`c#`), `sql` (`mysql`/`postgres`/`sqlite`/`plsql`/`tsql`), `html` (`htm`), `css`, `xml` (`svg`/`xhtml`/`xsl`/`rss`/`atom`/`plist`), `dockerfile` (`docker`/`containerfile`), `toml`, `ini` (`conf`/`cfg`/`properties`), `lua`, `perl` (`pl`/`pm`), `r` (`rscript`), `scala` (`sbt`), `dart`, `regex` (`regexp`/`re`), `graphql` (`gql`).
+
+**`diff` blocks** also get line-level red/green/purple/blue treatment for `-`/`+`/`@@`/`+++/---` lines — useful in code-review style reports.
+
+**`--inline-runtime` artifacts are still offline-friendly**: the CLI scans the markdown for code-block languages and inlines every non-builtin module it actually needs, so the resulting HTML opens via `file://` with no network calls. The complete language registry lives in `assets/lang/index.json`.
+
+If a language isn't in either list, the block falls back to plain monospaced text — never an error.
+
 ## Local Tools
 
 Validate a Markdown file:
@@ -140,7 +282,7 @@ node SKILL_DIR/scripts/aio.mjs render report.md
 By default the rendered HTML references the runtime via jsDelivr CDN, so the file is portable:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.2.2/assets/ai-output-runtime.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.4.0/assets/ai-output-runtime.js"></script>
 ```
 
 For an offline / `file://`-friendly artifact, inline the runtime:

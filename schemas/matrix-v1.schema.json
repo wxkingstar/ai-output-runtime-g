@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-output.dev/schemas/matrix-v1.schema.json",
+  "title": "aio:matrix@1",
+  "description": "Structural shape for aio:matrix@1. The CLI at scripts/aio.mjs is the source of truth for invariants — notably items must lie within [xMin, xMax] × [yMin, yMax] and quadrants (if present) must have exactly 4 entries.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "title":    { "type": "string", "maxLength": 100, "pattern": "^[^<>]*$" },
+    "subtitle": { "type": "string", "maxLength": 160, "pattern": "^[^<>]*$" },
+    "asOf":     { "type": "string", "maxLength": 40,  "pattern": "^[^<>]*$" },
+    "xLabel":   { "type": "string", "maxLength": 40, "pattern": "^[^<>]*$" },
+    "yLabel":   { "type": "string", "maxLength": 40, "pattern": "^[^<>]*$" },
+    "xMin":     { "type": "number" },
+    "xMax":     { "type": "number" },
+    "yMin":     { "type": "number" },
+    "yMax":     { "type": "number" },
+    "quadrants": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "type": "string", "maxLength": 60, "pattern": "^[^<>]*$" }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label": { "type": "string", "maxLength": 40, "pattern": "^[^<>]*$" },
+          "x":     { "type": "number" },
+          "y":     { "type": "number" },
+          "tone":  { "type": "string", "enum": ["neutral", "good", "warn", "bad"] },
+          "note":  { "type": "string", "maxLength": 120, "pattern": "^[^<>]*$" }
+        },
+        "required": ["label", "x", "y"]
+      }
+    }
+  },
+  "required": ["items"]
+}

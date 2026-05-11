@@ -26,13 +26,16 @@
       totalLabel: "Total",
       toc: "Contents",
       copySource: "Copy source",
+      copyCode: "Copy",
+      copied: "Copied",
       viewSource: "View source",
       hideSource: "Hide source",
       print: "Print / PDF",
       toggleTheme: "Theme",
       themeLight: "Light",
       themeDark: "Dark",
-      themeAuto: "Auto"
+      themeAuto: "Auto",
+      skimMode: "Skim"
     },
     "zh-CN": {
       brandTagline: "CommonMark 源稿、白名单数据块、确定性渲染",
@@ -44,13 +47,16 @@
       totalLabel: "合计",
       toc: "目录",
       copySource: "复制源稿",
+      copyCode: "复制",
+      copied: "已复制",
       viewSource: "查看源稿",
       hideSource: "隐藏源稿",
       print: "打印 / PDF",
       toggleTheme: "主题",
       themeLight: "浅色",
       themeDark: "深色",
-      themeAuto: "跟随系统"
+      themeAuto: "跟随系统",
+      skimMode: "速览"
     }
   };
 
@@ -97,6 +103,27 @@
       --ai-code-border: #dbe3ea;
       --ai-pre-bg: #0f172a;
       --ai-pre-fg: #eef2ff;
+      --ai-codeblock-head-bg: rgba(255, 255, 255, 0.04);
+      --ai-codeblock-head-border: rgba(255, 255, 255, 0.08);
+      --ai-codeblock-head-fg: #94a3b8;
+      --ai-codeblock-btn-hover-bg: rgba(255, 255, 255, 0.08);
+      --ai-tk-kw: #c678dd;
+      --ai-tk-str: #98c379;
+      --ai-tk-num: #d19a66;
+      --ai-tk-bool: #56b6c2;
+      --ai-tk-cmt: #7f848e;
+      --ai-tk-fn: #61afef;
+      --ai-tk-var: #e06c75;
+      --ai-tk-meta: #d19a66;
+      --ai-tk-type: #56b6c2;
+      --ai-tk-key: #e06c75;
+      --ai-tk-punct: #abb2bf;
+      --ai-tk-diff-add-bg: rgba(74, 222, 128, 0.14);
+      --ai-tk-diff-add-fg: #b6eecf;
+      --ai-tk-diff-del-bg: rgba(248, 113, 113, 0.14);
+      --ai-tk-diff-del-fg: #f5b5b5;
+      --ai-tk-diff-hunk-fg: #c678dd;
+      --ai-tk-diff-file-fg: #61afef;
       --ai-section-chip-bg: #e8f1ff;
       --ai-toc-bg: rgba(255, 255, 255, 0.82);
       --ai-input-bg: #ffffff;
@@ -374,6 +401,77 @@
       color: inherit;
     }
 
+    .ai-codeblock {
+      margin: 14px 0;
+      background: var(--ai-pre-bg);
+      color: var(--ai-pre-fg);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--ai-shadow);
+    }
+
+    .ai-codeblock pre {
+      margin: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .ai-codeblock-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 7px 12px 7px 14px;
+      background: var(--ai-codeblock-head-bg);
+      border-bottom: 1px solid var(--ai-codeblock-head-border);
+      font: 12px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color: var(--ai-codeblock-head-fg);
+      letter-spacing: 0.04em;
+    }
+
+    .ai-codeblock-lang {
+      text-transform: lowercase;
+      opacity: 0.85;
+    }
+
+    .ai-codeblock-copy {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--ai-codeblock-head-fg);
+      font: 12px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 120ms ease, color 120ms ease;
+    }
+
+    .ai-codeblock-copy:hover {
+      background: var(--ai-codeblock-btn-hover-bg);
+      color: var(--ai-pre-fg);
+    }
+
+    .ai-codeblock-copy.copied {
+      color: #4ade80;
+    }
+
+    .tk-kw   { color: var(--ai-tk-kw);   }
+    .tk-str  { color: var(--ai-tk-str);  }
+    .tk-num  { color: var(--ai-tk-num);  }
+    .tk-bool { color: var(--ai-tk-bool); }
+    .tk-cmt  { color: var(--ai-tk-cmt); font-style: italic; }
+    .tk-fn   { color: var(--ai-tk-fn);   }
+    .tk-var  { color: var(--ai-tk-var);  }
+    .tk-meta { color: var(--ai-tk-meta); }
+    .tk-type { color: var(--ai-tk-type); }
+    .tk-key  { color: var(--ai-tk-key);  }
+    .tk-punct{ color: var(--ai-tk-punct); }
+
+    .tk-diff-add  { display: block; background: var(--ai-tk-diff-add-bg); color: var(--ai-tk-diff-add-fg); }
+    .tk-diff-del  { display: block; background: var(--ai-tk-diff-del-bg); color: var(--ai-tk-diff-del-fg); }
+    .tk-diff-hunk { display: block; color: var(--ai-tk-diff-hunk-fg); }
+    .tk-diff-file { display: block; color: var(--ai-tk-diff-file-fg); font-weight: 600; }
+
     .ai-toc {
       display: none;
       padding: 10px;
@@ -418,11 +516,13 @@
       padding: 13px 14px;
       border-bottom: 1px solid var(--ai-line);
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       gap: 14px;
       align-items: center;
       background: var(--ai-panel);
     }
+
+    .ai-component-header > .ai-search { margin-left: auto; }
 
     .ai-component-header::before {
       counter-increment: ai-section;
@@ -593,6 +693,408 @@
     .ai-callout-warning .ai-component-body { background: var(--ai-callout-warning-bg); }
     .ai-callout-danger { border-left-color: var(--ai-red); }
     .ai-callout-danger .ai-component-body { background: var(--ai-callout-danger-bg); }
+
+    .ai-as-of {
+      color: var(--ai-muted);
+      font-size: 11px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      align-self: center;
+    }
+
+    .ai-tone-good   { --ai-tone-color: var(--ai-green); }
+    .ai-tone-warn   { --ai-tone-color: var(--ai-yellow); }
+    .ai-tone-bad    { --ai-tone-color: var(--ai-red); }
+    .ai-tone-neutral{ --ai-tone-color: var(--ai-muted); }
+
+    .ai-trend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 10px;
+      padding: 14px;
+    }
+    .ai-trend-card {
+      background: var(--ai-panel-soft);
+      border: 1px solid var(--ai-line);
+      border-radius: 7px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+    .ai-trend-card.ai-tone-good   { border-color: rgba(22,163,74,0.45); }
+    .ai-trend-card.ai-tone-warn   { border-color: rgba(249,115,22,0.45); }
+    .ai-trend-card.ai-tone-bad    { border-color: rgba(220,38,38,0.45); }
+    .ai-trend-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+    .ai-trend-label {
+      color: var(--ai-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+    }
+    .ai-trend-value {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--ai-ink);
+    }
+    .ai-trend-spark {
+      color: var(--ai-accent);
+      height: 32px;
+    }
+    .ai-trend-spark .ai-spark { width: 100%; height: 100%; display: block; }
+    .ai-trend-card.ai-tone-good .ai-trend-spark { color: var(--ai-green); }
+    .ai-trend-card.ai-tone-warn .ai-trend-spark { color: var(--ai-yellow); }
+    .ai-trend-card.ai-tone-bad  .ai-trend-spark { color: var(--ai-red); }
+    .ai-trend-note { color: var(--ai-muted); font-size: 12px; }
+    .ai-delta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: var(--ai-badge-bg);
+    }
+    .ai-delta-up   { color: var(--ai-green); }
+    .ai-delta-down { color: var(--ai-red); }
+    .ai-delta-flat { color: var(--ai-muted); }
+    .ai-delta-label { color: var(--ai-muted); font-weight: 500; }
+
+    .ai-status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      padding: 14px;
+    }
+    .ai-status-card {
+      background: var(--ai-panel-soft);
+      border: 1px solid var(--ai-line);
+      border-top-width: 3px;
+      border-radius: 7px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .ai-status-card.ai-status-good { border-top-color: var(--ai-green); }
+    .ai-status-card.ai-status-warn { border-top-color: var(--ai-yellow); }
+    .ai-status-card.ai-status-bad  { border-top-color: var(--ai-red); }
+    .ai-status-card.ai-status-info { border-top-color: var(--ai-accent); }
+    .ai-status-card.ai-status-neutral { border-top-color: var(--ai-muted); }
+    .ai-status-head { display: flex; align-items: center; gap: 8px; }
+    .ai-status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--ai-muted);
+      flex: 0 0 8px;
+    }
+    .ai-status-good .ai-status-dot { background: var(--ai-green); box-shadow: 0 0 0 3px rgba(22,163,74,0.18); }
+    .ai-status-warn .ai-status-dot { background: var(--ai-yellow); box-shadow: 0 0 0 3px rgba(249,115,22,0.18); }
+    .ai-status-bad  .ai-status-dot { background: var(--ai-red); box-shadow: 0 0 0 3px rgba(220,38,38,0.20); }
+    .ai-status-info .ai-status-dot { background: var(--ai-accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.18); }
+    .ai-status-label { font-weight: 600; color: var(--ai-ink); }
+    .ai-status-value { font-size: 18px; font-weight: 700; }
+    .ai-status-note  { color: var(--ai-muted); font-size: 12px; }
+
+    .ai-report-header {
+      margin: 14px 0 18px;
+      padding: 20px 22px;
+      background: linear-gradient(135deg, var(--ai-accent), var(--ai-accent-dark));
+      color: #fff;
+      border-radius: 10px;
+      box-shadow: var(--ai-shadow);
+    }
+    .ai-rh-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .ai-rh-title { margin: 0; font-size: 22px; font-weight: 700; }
+    .ai-rh-subtitle { margin: 6px 0 0; opacity: 0.86; font-size: 14px; }
+    .ai-rh-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .ai-rh-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.20);
+    }
+    .ai-rh-period { background: rgba(255,255,255,0.28); font-weight: 700; }
+    .ai-rh-status-final { background: rgba(74,222,128,0.32); border-color: rgba(74,222,128,0.55); }
+    .ai-rh-status-review { background: rgba(251,191,36,0.32); border-color: rgba(251,191,36,0.55); }
+    .ai-rh-status-draft { background: rgba(255,255,255,0.16); }
+    .ai-rh-status-archived { background: rgba(148,163,184,0.32); }
+    .ai-rh-class-confidential { background: rgba(248,113,113,0.32); border-color: rgba(248,113,113,0.55); }
+    .ai-rh-class-restricted { background: rgba(248,113,113,0.5); border-color: rgba(248,113,113,0.75); }
+    .ai-rh-class-internal { background: rgba(96,165,250,0.32); }
+    .ai-rh-class-public { background: rgba(74,222,128,0.32); }
+    .ai-rh-tone-good { background: rgba(74,222,128,0.32); }
+    .ai-rh-tone-warn { background: rgba(251,191,36,0.32); }
+    .ai-rh-tone-bad  { background: rgba(248,113,113,0.32); }
+    .ai-rh-tone-info { background: rgba(96,165,250,0.32); }
+    .ai-rh-info {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 18px;
+      font-size: 12px;
+      opacity: 0.92;
+    }
+    .ai-rh-key { color: rgba(255,255,255,0.7); margin-right: 4px; font-weight: 500; }
+
+    .ai-timeline {
+      list-style: none;
+      margin: 0;
+      padding: 14px 18px 14px 14px;
+      position: relative;
+    }
+    .ai-timeline::before {
+      content: "";
+      position: absolute;
+      left: 24px;
+      top: 18px;
+      bottom: 18px;
+      width: 2px;
+      background: var(--ai-line);
+      border-radius: 2px;
+    }
+    .ai-tl-item {
+      position: relative;
+      padding: 10px 0 10px 38px;
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      column-gap: 14px;
+      align-items: start;
+    }
+    .ai-tl-dot {
+      position: absolute;
+      left: 18px;
+      top: 14px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--ai-accent);
+      box-shadow: 0 0 0 3px var(--ai-panel);
+    }
+    .ai-tl-info .ai-tl-dot, .ai-tl-item.ai-tl-info .ai-tl-dot { background: var(--ai-accent); }
+    .ai-tl-good .ai-tl-dot { background: var(--ai-green); }
+    .ai-tl-warn .ai-tl-dot { background: var(--ai-yellow); }
+    .ai-tl-bad  .ai-tl-dot { background: var(--ai-red); }
+    .ai-tl-neutral .ai-tl-dot { background: var(--ai-muted); }
+    .ai-tl-time {
+      color: var(--ai-muted);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      padding-top: 1px;
+    }
+    .ai-tl-title { margin: 0 0 2px; font-size: 14px; font-weight: 600; }
+    .ai-tl-body  { margin: 0; color: var(--ai-muted); font-size: 13px; }
+
+    .ai-action-list {
+      list-style: none;
+      margin: 0;
+      padding: 4px 0;
+    }
+    .ai-action-item {
+      display: grid;
+      grid-template-columns: 64px 32px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-top: 1px solid var(--ai-line);
+    }
+    .ai-action-item:first-child { border-top: 0; }
+    .ai-action-status {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 3px 6px;
+      border-radius: 4px;
+      background: var(--ai-badge-bg);
+      color: var(--ai-muted);
+      text-align: center;
+    }
+    .ai-action-todo .ai-action-status { background: rgba(148,163,184,0.16); color: var(--ai-muted); }
+    .ai-action-doing .ai-action-status { background: rgba(37,99,235,0.16); color: var(--ai-accent); }
+    .ai-action-done .ai-action-status { background: rgba(22,163,74,0.16); color: var(--ai-green); }
+    .ai-action-blocked .ai-action-status { background: rgba(220,38,38,0.16); color: var(--ai-red); }
+    .ai-action-priority {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 4px;
+      border-radius: 3px;
+      text-align: center;
+      background: var(--ai-badge-bg);
+      color: var(--ai-muted);
+    }
+    .ai-action-priority.ai-action-p0 { background: rgba(220,38,38,0.18); color: var(--ai-red); }
+    .ai-action-priority.ai-action-p1 { background: rgba(249,115,22,0.18); color: var(--ai-yellow); }
+    .ai-action-priority.ai-action-p2 { background: rgba(96,165,250,0.18); color: var(--ai-accent); }
+    .ai-action-priority.ai-action-p3 { background: var(--ai-badge-bg); }
+    .ai-action-task { line-height: 1.45; }
+    .ai-action-done .ai-action-task { text-decoration: line-through; color: var(--ai-muted); }
+    .ai-action-meta { display: flex; gap: 8px; align-items: center; color: var(--ai-muted); font-size: 12px; }
+    .ai-action-owner { white-space: nowrap; }
+    .ai-action-due {
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--ai-badge-bg);
+    }
+    .ai-action-due-overdue { background: rgba(220,38,38,0.16); color: var(--ai-red); font-weight: 600; }
+
+    .ai-comparison th, .ai-comparison td { text-align: left; }
+    .ai-comparison .ai-cmp-row-head { font-weight: 600; color: var(--ai-ink); }
+    .ai-comparison .ai-cmp-weight {
+      display: inline-block;
+      margin-left: 4px;
+      color: var(--ai-muted);
+      font-weight: 400;
+      font-size: 11px;
+    }
+    .ai-comparison th.ai-cmp-rec, .ai-comparison td.ai-cmp-rec {
+      background: rgba(22,163,74,0.08);
+      border-left: 2px solid var(--ai-green);
+    }
+    .ai-comparison th.ai-cmp-rec:not(:first-child) { color: var(--ai-green); }
+    .ai-cmp-rec-badge {
+      display: inline-block;
+      margin-left: 4px;
+      color: var(--ai-yellow);
+      font-size: 13px;
+    }
+
+    body.ai-skim .ai-document > p,
+    body.ai-skim .ai-document > ul,
+    body.ai-skim .ai-document > ol,
+    body.ai-skim .ai-document > blockquote {
+      opacity: 0.35;
+      transition: opacity 200ms ease;
+    }
+    body.ai-skim .ai-document > p:hover,
+    body.ai-skim .ai-document > ul:hover,
+    body.ai-skim .ai-document > ol:hover {
+      opacity: 1;
+    }
+    .ai-button.ai-skim-on { background: var(--ai-accent); color: #fff; border-color: var(--ai-accent); }
+
+    .ai-gauge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      padding: 14px;
+    }
+    .ai-gauge-card {
+      background: var(--ai-panel-soft);
+      border: 1px solid var(--ai-line);
+      border-radius: 7px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .ai-gauge-label {
+      align-self: stretch;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ai-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .ai-gauge-svg { width: 100%; max-width: 200px; height: auto; }
+    .ai-gauge-note { color: var(--ai-muted); font-size: 12px; text-align: center; }
+
+    .ai-funnel { padding: 14px; display: grid; gap: 8px; }
+    .ai-funnel-row {
+      display: grid;
+      grid-template-columns: minmax(120px, 1fr) 3fr minmax(140px, 1.2fr);
+      align-items: center;
+      gap: 12px;
+    }
+    .ai-funnel-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ai-ink);
+      display: flex;
+      flex-direction: column;
+    }
+    .ai-funnel-note { font-weight: 400; color: var(--ai-muted); font-size: 11px; margin-top: 2px; }
+    .ai-funnel-track {
+      background: var(--ai-panel-soft);
+      border: 1px solid var(--ai-line);
+      border-radius: 4px;
+      height: 30px;
+      overflow: hidden;
+      position: relative;
+    }
+    .ai-funnel-bar {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 8px;
+      transition: width 200ms ease;
+      min-width: 24px;
+    }
+    .ai-funnel-value {
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+    .ai-funnel-conv {
+      font-size: 11px;
+      color: var(--ai-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      font-variant-numeric: tabular-nums;
+    }
+    .ai-funnel-step { font-weight: 600; color: var(--ai-ink); }
+    .ai-funnel-overall { color: var(--ai-muted); }
+
+    .ai-waterfall-wrap .ai-chart-svg { max-height: 360px; }
+
+    .ai-heatmap-wrap .ai-chart-svg { max-height: 480px; }
+    .ai-heat-legend {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 14px 14px;
+      font-size: 11px;
+      color: var(--ai-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .ai-heat-bar { flex: 1; height: 8px; border-radius: 2px; }
+
+    .ai-matrix-wrap .ai-chart-svg { max-height: 420px; }
+
+    @media (max-width: 720px) {
+      .ai-funnel-row { grid-template-columns: 1fr; }
+      .ai-funnel-conv { flex-direction: row; gap: 10px; }
+    }
 
     @media (max-width: 860px) {
       .ai-layout {
@@ -871,6 +1373,47 @@
     if (typeof value !== "number" || !Number.isFinite(value)) throw new Error(`${name} must be a finite number`);
   }
 
+  const SAFE_FORMAT_RE = /^(?:raw|number|percent|compact|currency:[A-Z]{3})$/;
+
+  function validateFormat(value, name) {
+    if (value === undefined) return;
+    if (typeof value !== "string" || !SAFE_FORMAT_RE.test(value)) {
+      throw new Error(`${name} must be one of raw, number, percent, compact, or currency:CCY (ISO 4217)`);
+    }
+  }
+
+  function formatValue(value, format, locale) {
+    if (value === undefined || value === null || value === "") return "";
+    if (typeof value !== "number" || !Number.isFinite(value)) return String(value);
+    const fmt = format || "raw";
+    const loc = locale || "en";
+    try {
+      if (fmt.startsWith("currency:")) {
+        return new Intl.NumberFormat(loc, { style: "currency", currency: fmt.slice(9), maximumFractionDigits: 2 }).format(value);
+      }
+      if (fmt === "percent") {
+        return new Intl.NumberFormat(loc, { style: "percent", maximumFractionDigits: 1 }).format(value);
+      }
+      if (fmt === "number") {
+        return new Intl.NumberFormat(loc).format(value);
+      }
+      if (fmt === "compact") {
+        return new Intl.NumberFormat(loc, { notation: "compact", maximumFractionDigits: 1 }).format(value);
+      }
+    } catch (_) { /* fall through */ }
+    return String(value);
+  }
+
+  function renderAsOf(asOf) {
+    if (!asOf) return "";
+    return `<span class="ai-as-of" title="Data as of ${escapeHtml(asOf)}">${escapeHtml(asOf)}</span>`;
+  }
+
+  function validateAsOf(value, name) {
+    if (value === undefined) return;
+    requirePlainText(value, name, 40);
+  }
+
   function validateChart(data) {
     rejectUnknownKeys(
       data,
@@ -934,6 +1477,353 @@
       if (s.tone && !CHART_TONES.includes(s.tone)) {
         throw new Error(`chart.series[${index}].tone must be one of: ${CHART_TONES.join(", ")}`);
       }
+    });
+  }
+
+  const MAX_TREND_ITEMS = 8;
+  const MAX_STATUS_ITEMS = 12;
+  const MAX_TIMELINE_ITEMS = 30;
+  const MAX_ACTION_ITEMS = 30;
+  const MAX_COMPARISON_OPTIONS = 6;
+  const MAX_COMPARISON_CRITERIA = 14;
+  const TREND_TONES = ["neutral", "good", "warn", "bad"];
+  const STATUS_TONES = ["good", "warn", "bad", "neutral", "info"];
+  const TIMELINE_TONES = ["info", "good", "warn", "bad", "neutral"];
+  const ACTION_STATUSES = ["todo", "doing", "done", "blocked"];
+  const ACTION_PRIORITIES = ["P0", "P1", "P2", "P3"];
+  const DELTA_DIRECTIONS = ["up", "down", "flat"];
+  const REPORT_STATUSES = ["draft", "review", "final", "archived"];
+  const REPORT_CLASSIFICATIONS = ["public", "internal", "confidential", "restricted"];
+
+  function validateTrendCard(data) {
+    rejectUnknownKeys(data, ["title", "asOf", "items"], "trend-card");
+    if (data.title) requirePlainText(data.title, "trend-card.title", 100);
+    validateAsOf(data.asOf, "trend-card.asOf");
+    requireArray(data.items, "trend-card.items");
+    if (data.items.length < 1 || data.items.length > MAX_TREND_ITEMS) {
+      throw new Error(`trend-card.items must contain 1-${MAX_TREND_ITEMS} items`);
+    }
+    data.items.forEach((item, i) => {
+      const base = `trend-card.items[${i}]`;
+      rejectUnknownKeys(item, ["label", "value", "format", "delta", "spark", "tone", "note"], base);
+      requirePlainText(item.label, `${base}.label`, 80);
+      if (item.value === undefined) throw new Error(`${base}.value is required`);
+      if (typeof item.value === "string") requirePlainText(item.value, `${base}.value`, 40);
+      else if (typeof item.value !== "number" || !Number.isFinite(item.value)) {
+        throw new Error(`${base}.value must be a finite number or short string`);
+      }
+      validateFormat(item.format, `${base}.format`);
+      if (item.tone && !TREND_TONES.includes(item.tone)) {
+        throw new Error(`${base}.tone must be one of: ${TREND_TONES.join(", ")}`);
+      }
+      if (item.note) requirePlainText(item.note, `${base}.note`, 140);
+      if (item.delta !== undefined) {
+        rejectUnknownKeys(item.delta, ["value", "direction", "format", "label"], `${base}.delta`);
+        requireFiniteNumber(item.delta.value, `${base}.delta.value`);
+        if (item.delta.direction && !DELTA_DIRECTIONS.includes(item.delta.direction)) {
+          throw new Error(`${base}.delta.direction must be one of: ${DELTA_DIRECTIONS.join(", ")}`);
+        }
+        validateFormat(item.delta.format, `${base}.delta.format`);
+        if (item.delta.label) requirePlainText(item.delta.label, `${base}.delta.label`, 40);
+      }
+      if (item.spark !== undefined) {
+        requireArray(item.spark, `${base}.spark`);
+        if (item.spark.length < 2 || item.spark.length > 60) {
+          throw new Error(`${base}.spark must contain 2-60 numbers`);
+        }
+        item.spark.forEach((v, j) => requireFiniteNumber(v, `${base}.spark[${j}]`));
+      }
+    });
+  }
+
+  function validateStatusGrid(data) {
+    rejectUnknownKeys(data, ["title", "asOf", "items"], "status-grid");
+    if (data.title) requirePlainText(data.title, "status-grid.title", 100);
+    validateAsOf(data.asOf, "status-grid.asOf");
+    requireArray(data.items, "status-grid.items");
+    if (data.items.length < 1 || data.items.length > MAX_STATUS_ITEMS) {
+      throw new Error(`status-grid.items must contain 1-${MAX_STATUS_ITEMS} items`);
+    }
+    data.items.forEach((item, i) => {
+      const base = `status-grid.items[${i}]`;
+      rejectUnknownKeys(item, ["label", "status", "value", "note"], base);
+      requirePlainText(item.label, `${base}.label`, 80);
+      if (!STATUS_TONES.includes(item.status)) {
+        throw new Error(`${base}.status must be one of: ${STATUS_TONES.join(", ")}`);
+      }
+      if (item.value) requirePlainText(item.value, `${base}.value`, 60);
+      if (item.note) requirePlainText(item.note, `${base}.note`, 140);
+    });
+  }
+
+  function validateReportHeader(data) {
+    rejectUnknownKeys(data, ["title", "subtitle", "period", "author", "status", "dataAsOf", "classification", "badges"], "report-header");
+    requirePlainText(data.title, "report-header.title", 140);
+    if (data.subtitle) requirePlainText(data.subtitle, "report-header.subtitle", 200);
+    if (data.period) requirePlainText(data.period, "report-header.period", 60);
+    if (data.author) requirePlainText(data.author, "report-header.author", 80);
+    if (data.status && !REPORT_STATUSES.includes(data.status)) {
+      throw new Error(`report-header.status must be one of: ${REPORT_STATUSES.join(", ")}`);
+    }
+    if (data.dataAsOf) validateAsOf(data.dataAsOf, "report-header.dataAsOf");
+    if (data.classification && !REPORT_CLASSIFICATIONS.includes(data.classification)) {
+      throw new Error(`report-header.classification must be one of: ${REPORT_CLASSIFICATIONS.join(", ")}`);
+    }
+    if (data.badges !== undefined) {
+      requireArray(data.badges, "report-header.badges");
+      if (data.badges.length > 6) throw new Error("report-header.badges must contain at most 6 items");
+      data.badges.forEach((b, i) => {
+        rejectUnknownKeys(b, ["label", "tone"], `report-header.badges[${i}]`);
+        requirePlainText(b.label, `report-header.badges[${i}].label`, 40);
+        if (b.tone && !["info", "good", "warn", "bad", "neutral"].includes(b.tone)) {
+          throw new Error(`report-header.badges[${i}].tone must be one of: info, good, warn, bad, neutral`);
+        }
+      });
+    }
+  }
+
+  function validateTimeline(data) {
+    rejectUnknownKeys(data, ["title", "asOf", "items"], "timeline");
+    if (data.title) requirePlainText(data.title, "timeline.title", 100);
+    validateAsOf(data.asOf, "timeline.asOf");
+    requireArray(data.items, "timeline.items");
+    if (data.items.length < 1 || data.items.length > MAX_TIMELINE_ITEMS) {
+      throw new Error(`timeline.items must contain 1-${MAX_TIMELINE_ITEMS} items`);
+    }
+    data.items.forEach((item, i) => {
+      const base = `timeline.items[${i}]`;
+      rejectUnknownKeys(item, ["time", "title", "body", "tone"], base);
+      requirePlainText(item.time, `${base}.time`, 60);
+      requirePlainText(item.title, `${base}.title`, 120);
+      if (item.body) requirePlainText(item.body, `${base}.body`, 400);
+      if (item.tone && !TIMELINE_TONES.includes(item.tone)) {
+        throw new Error(`${base}.tone must be one of: ${TIMELINE_TONES.join(", ")}`);
+      }
+    });
+  }
+
+  function validateActionItems(data) {
+    rejectUnknownKeys(data, ["title", "asOf", "items"], "action-items");
+    if (data.title) requirePlainText(data.title, "action-items.title", 100);
+    validateAsOf(data.asOf, "action-items.asOf");
+    requireArray(data.items, "action-items.items");
+    if (data.items.length < 1 || data.items.length > MAX_ACTION_ITEMS) {
+      throw new Error(`action-items.items must contain 1-${MAX_ACTION_ITEMS} items`);
+    }
+    data.items.forEach((item, i) => {
+      const base = `action-items.items[${i}]`;
+      rejectUnknownKeys(item, ["task", "owner", "due", "status", "priority"], base);
+      requirePlainText(item.task, `${base}.task`, 240);
+      if (item.owner) requirePlainText(item.owner, `${base}.owner`, 60);
+      if (item.due) requirePlainText(item.due, `${base}.due`, 30);
+      if (item.status && !ACTION_STATUSES.includes(item.status)) {
+        throw new Error(`${base}.status must be one of: ${ACTION_STATUSES.join(", ")}`);
+      }
+      if (item.priority && !ACTION_PRIORITIES.includes(item.priority)) {
+        throw new Error(`${base}.priority must be one of: ${ACTION_PRIORITIES.join(", ")}`);
+      }
+    });
+  }
+
+  function validateComparison(data) {
+    rejectUnknownKeys(data, ["title", "subtitle", "asOf", "options", "recommended", "criteria"], "comparison");
+    if (data.title) requirePlainText(data.title, "comparison.title", 100);
+    if (data.subtitle) requirePlainText(data.subtitle, "comparison.subtitle", 160);
+    validateAsOf(data.asOf, "comparison.asOf");
+    requireArray(data.options, "comparison.options");
+    if (data.options.length < 2 || data.options.length > MAX_COMPARISON_OPTIONS) {
+      throw new Error(`comparison.options must contain 2-${MAX_COMPARISON_OPTIONS} entries`);
+    }
+    data.options.forEach((opt, i) => requirePlainText(opt, `comparison.options[${i}]`, 60));
+    if (data.recommended !== undefined) {
+      requirePlainText(data.recommended, "comparison.recommended", 60);
+      if (!data.options.includes(data.recommended)) {
+        throw new Error("comparison.recommended must match one of the options");
+      }
+    }
+    requireArray(data.criteria, "comparison.criteria");
+    if (data.criteria.length < 1 || data.criteria.length > MAX_COMPARISON_CRITERIA) {
+      throw new Error(`comparison.criteria must contain 1-${MAX_COMPARISON_CRITERIA} entries`);
+    }
+    data.criteria.forEach((c, i) => {
+      const base = `comparison.criteria[${i}]`;
+      rejectUnknownKeys(c, ["label", "values", "weight", "tone"], base);
+      requirePlainText(c.label, `${base}.label`, 80);
+      requireArray(c.values, `${base}.values`);
+      if (c.values.length !== data.options.length) {
+        throw new Error(`${base}.values must match comparison.options length`);
+      }
+      c.values.forEach((v, j) => {
+        if (typeof v !== "string" && typeof v !== "number" && typeof v !== "boolean") {
+          throw new Error(`${base}.values[${j}] must be string, number, or boolean`);
+        }
+        if (String(v).length > 80) throw new Error(`${base}.values[${j}] exceeds 80 characters`);
+        if (/[<>]/.test(String(v))) throw new Error(`${base}.values[${j}] must not contain HTML`);
+      });
+      if (c.weight !== undefined) requireFiniteNumber(c.weight, `${base}.weight`);
+      if (c.tone && !["good", "warn", "bad", "neutral"].includes(c.tone)) {
+        throw new Error(`${base}.tone must be one of: good, warn, bad, neutral`);
+      }
+    });
+  }
+
+  const MAX_GAUGE_ITEMS = 8;
+  const MAX_FUNNEL_STAGES = 8;
+  const MAX_WATERFALL_BARS = 14;
+  const MAX_HEATMAP_X = 32;
+  const MAX_HEATMAP_Y = 32;
+  const MAX_MATRIX_ITEMS = 24;
+  const WATERFALL_KINDS = ["start", "up", "down", "subtotal", "end"];
+  const HEATMAP_TONES = ["accent", "good", "warn", "bad", "neutral"];
+
+  function validateGauge(data) {
+    rejectUnknownKeys(data, ["title", "asOf", "items"], "gauge");
+    if (data.title) requirePlainText(data.title, "gauge.title", 100);
+    validateAsOf(data.asOf, "gauge.asOf");
+    requireArray(data.items, "gauge.items");
+    if (data.items.length < 1 || data.items.length > MAX_GAUGE_ITEMS) {
+      throw new Error(`gauge.items must contain 1-${MAX_GAUGE_ITEMS} items`);
+    }
+    data.items.forEach((item, i) => {
+      const base = `gauge.items[${i}]`;
+      rejectUnknownKeys(item, ["label", "value", "target", "min", "max", "format", "tone", "note"], base);
+      requirePlainText(item.label, `${base}.label`, 80);
+      requireFiniteNumber(item.value, `${base}.value`);
+      if (item.min !== undefined) requireFiniteNumber(item.min, `${base}.min`);
+      if (item.max !== undefined) requireFiniteNumber(item.max, `${base}.max`);
+      if (item.target !== undefined) requireFiniteNumber(item.target, `${base}.target`);
+      validateFormat(item.format, `${base}.format`);
+      if (item.tone && !TREND_TONES.includes(item.tone)) {
+        throw new Error(`${base}.tone must be one of: ${TREND_TONES.join(", ")}`);
+      }
+      if (item.note) requirePlainText(item.note, `${base}.note`, 140);
+      const min = item.min !== undefined ? item.min : 0;
+      const max = item.max !== undefined ? item.max : (item.format === "percent" ? 1 : 100);
+      if (max <= min) throw new Error(`${base}.max must be greater than min`);
+    });
+  }
+
+  function validateFunnel(data) {
+    rejectUnknownKeys(data, ["title", "subtitle", "asOf", "format", "stages"], "funnel");
+    if (data.title) requirePlainText(data.title, "funnel.title", 100);
+    if (data.subtitle) requirePlainText(data.subtitle, "funnel.subtitle", 160);
+    validateAsOf(data.asOf, "funnel.asOf");
+    validateFormat(data.format, "funnel.format");
+    requireArray(data.stages, "funnel.stages");
+    if (data.stages.length < 2 || data.stages.length > MAX_FUNNEL_STAGES) {
+      throw new Error(`funnel.stages must contain 2-${MAX_FUNNEL_STAGES} stages`);
+    }
+    let prev = Infinity;
+    data.stages.forEach((stage, i) => {
+      const base = `funnel.stages[${i}]`;
+      rejectUnknownKeys(stage, ["label", "value", "tone", "note"], base);
+      requirePlainText(stage.label, `${base}.label`, 80);
+      requireFiniteNumber(stage.value, `${base}.value`);
+      if (stage.value < 0) throw new Error(`${base}.value must be non-negative`);
+      if (stage.value > prev) throw new Error(`${base}.value must be <= the previous stage value`);
+      prev = stage.value;
+      if (stage.tone && !TREND_TONES.includes(stage.tone)) {
+        throw new Error(`${base}.tone must be one of: ${TREND_TONES.join(", ")}`);
+      }
+      if (stage.note) requirePlainText(stage.note, `${base}.note`, 140);
+    });
+  }
+
+  function validateWaterfall(data) {
+    rejectUnknownKeys(data, ["title", "subtitle", "asOf", "format", "bars"], "waterfall");
+    if (data.title) requirePlainText(data.title, "waterfall.title", 100);
+    if (data.subtitle) requirePlainText(data.subtitle, "waterfall.subtitle", 160);
+    validateAsOf(data.asOf, "waterfall.asOf");
+    validateFormat(data.format, "waterfall.format");
+    requireArray(data.bars, "waterfall.bars");
+    if (data.bars.length < 2 || data.bars.length > MAX_WATERFALL_BARS) {
+      throw new Error(`waterfall.bars must contain 2-${MAX_WATERFALL_BARS} bars`);
+    }
+    data.bars.forEach((bar, i) => {
+      const base = `waterfall.bars[${i}]`;
+      rejectUnknownKeys(bar, ["label", "value", "kind", "note"], base);
+      requirePlainText(bar.label, `${base}.label`, 60);
+      requireFiniteNumber(bar.value, `${base}.value`);
+      if (!WATERFALL_KINDS.includes(bar.kind)) {
+        throw new Error(`${base}.kind must be one of: ${WATERFALL_KINDS.join(", ")}`);
+      }
+      if (bar.note) requirePlainText(bar.note, `${base}.note`, 140);
+    });
+    if (data.bars[0].kind !== "start") {
+      throw new Error("waterfall.bars[0].kind must be 'start'");
+    }
+  }
+
+  function validateHeatmap(data) {
+    rejectUnknownKeys(data, ["title", "subtitle", "asOf", "xLabels", "yLabels", "rows", "format", "tone"], "heatmap");
+    if (data.title) requirePlainText(data.title, "heatmap.title", 100);
+    if (data.subtitle) requirePlainText(data.subtitle, "heatmap.subtitle", 160);
+    validateAsOf(data.asOf, "heatmap.asOf");
+    validateFormat(data.format, "heatmap.format");
+    if (data.tone && !HEATMAP_TONES.includes(data.tone)) {
+      throw new Error(`heatmap.tone must be one of: ${HEATMAP_TONES.join(", ")}`);
+    }
+    requireArray(data.xLabels, "heatmap.xLabels");
+    requireArray(data.yLabels, "heatmap.yLabels");
+    if (data.xLabels.length < 1 || data.xLabels.length > MAX_HEATMAP_X) {
+      throw new Error(`heatmap.xLabels must contain 1-${MAX_HEATMAP_X} entries`);
+    }
+    if (data.yLabels.length < 1 || data.yLabels.length > MAX_HEATMAP_Y) {
+      throw new Error(`heatmap.yLabels must contain 1-${MAX_HEATMAP_Y} entries`);
+    }
+    data.xLabels.forEach((l, i) => requirePlainText(l, `heatmap.xLabels[${i}]`, 24));
+    data.yLabels.forEach((l, i) => requirePlainText(l, `heatmap.yLabels[${i}]`, 24));
+    requireArray(data.rows, "heatmap.rows");
+    if (data.rows.length !== data.yLabels.length) {
+      throw new Error("heatmap.rows length must equal yLabels length");
+    }
+    data.rows.forEach((row, i) => {
+      requireArray(row, `heatmap.rows[${i}]`);
+      if (row.length !== data.xLabels.length) {
+        throw new Error(`heatmap.rows[${i}] length must equal xLabels length`);
+      }
+      row.forEach((v, j) => requireFiniteNumber(v, `heatmap.rows[${i}][${j}]`));
+    });
+  }
+
+  function validateMatrix(data) {
+    rejectUnknownKeys(data, ["title", "subtitle", "asOf", "xLabel", "yLabel", "xMin", "xMax", "yMin", "yMax", "quadrants", "items"], "matrix");
+    if (data.title) requirePlainText(data.title, "matrix.title", 100);
+    if (data.subtitle) requirePlainText(data.subtitle, "matrix.subtitle", 160);
+    validateAsOf(data.asOf, "matrix.asOf");
+    if (data.xLabel) requirePlainText(data.xLabel, "matrix.xLabel", 40);
+    if (data.yLabel) requirePlainText(data.yLabel, "matrix.yLabel", 40);
+    if (data.xMin !== undefined) requireFiniteNumber(data.xMin, "matrix.xMin");
+    if (data.xMax !== undefined) requireFiniteNumber(data.xMax, "matrix.xMax");
+    if (data.yMin !== undefined) requireFiniteNumber(data.yMin, "matrix.yMin");
+    if (data.yMax !== undefined) requireFiniteNumber(data.yMax, "matrix.yMax");
+    const xMin = data.xMin !== undefined ? data.xMin : 0;
+    const xMax = data.xMax !== undefined ? data.xMax : 10;
+    const yMin = data.yMin !== undefined ? data.yMin : 0;
+    const yMax = data.yMax !== undefined ? data.yMax : 10;
+    if (xMax <= xMin) throw new Error("matrix.xMax must be greater than xMin");
+    if (yMax <= yMin) throw new Error("matrix.yMax must be greater than yMin");
+    if (data.quadrants !== undefined) {
+      requireArray(data.quadrants, "matrix.quadrants");
+      if (data.quadrants.length !== 4) throw new Error("matrix.quadrants must contain exactly 4 labels (top-left, top-right, bottom-left, bottom-right)");
+      data.quadrants.forEach((q, i) => requirePlainText(q, `matrix.quadrants[${i}]`, 60));
+    }
+    requireArray(data.items, "matrix.items");
+    if (data.items.length < 1 || data.items.length > MAX_MATRIX_ITEMS) {
+      throw new Error(`matrix.items must contain 1-${MAX_MATRIX_ITEMS} items`);
+    }
+    data.items.forEach((item, i) => {
+      const base = `matrix.items[${i}]`;
+      rejectUnknownKeys(item, ["label", "x", "y", "tone", "note"], base);
+      requirePlainText(item.label, `${base}.label`, 40);
+      requireFiniteNumber(item.x, `${base}.x`);
+      requireFiniteNumber(item.y, `${base}.y`);
+      if (item.x < xMin || item.x > xMax) throw new Error(`${base}.x must be between xMin and xMax`);
+      if (item.y < yMin || item.y > yMax) throw new Error(`${base}.y must be between yMin and yMax`);
+      if (item.tone && !TREND_TONES.includes(item.tone)) {
+        throw new Error(`${base}.tone must be one of: ${TREND_TONES.join(", ")}`);
+      }
+      if (item.note) requirePlainText(item.note, `${base}.note`, 120);
     });
   }
 
@@ -1204,10 +2094,667 @@
     `;
   }
 
+  function buildSparkline(values, width, height) {
+    if (!values || values.length < 2) return "";
+    let min = values[0], max = values[0];
+    for (const v of values) { if (v < min) min = v; if (v > max) max = v; }
+    if (min === max) { min -= 1; max += 1; }
+    const stepX = width / (values.length - 1);
+    const pts = values.map((v, i) => {
+      const x = i * stepX;
+      const y = height - ((v - min) / (max - min)) * height;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    });
+    const path = "M" + pts.join(" L");
+    const last = pts[pts.length - 1].split(",");
+    return `<svg class="ai-spark" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true"><path d="${path}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${last[0]}" cy="${last[1]}" r="2" fill="currentColor"/></svg>`;
+  }
+
+  function renderTrendCard(data) {
+    validateTrendCard(data);
+    const cards = data.items.map((item) => {
+      const tone = item.tone || "neutral";
+      const value = formatValue(item.value, item.format, currentLocale);
+      let delta = "";
+      if (item.delta) {
+        const dir = item.delta.direction || (item.delta.value > 0 ? "up" : item.delta.value < 0 ? "down" : "flat");
+        const arrow = dir === "up" ? "▲" : dir === "down" ? "▼" : "→";
+        const dValue = formatValue(item.delta.value, item.delta.format || "number", currentLocale);
+        const dLabel = item.delta.label ? ` <span class="ai-delta-label">${escapeHtml(item.delta.label)}</span>` : "";
+        delta = `<span class="ai-delta ai-delta-${dir}">${arrow} ${escapeHtml(dValue)}${dLabel}</span>`;
+      }
+      const spark = item.spark ? buildSparkline(item.spark, 120, 32) : "";
+      const note = item.note ? `<span class="ai-trend-note">${escapeHtml(item.note)}</span>` : "";
+      return `
+        <article class="ai-trend-card ai-tone-${tone}">
+          <header class="ai-trend-head"><span class="ai-trend-label">${escapeHtml(item.label)}</span>${delta}</header>
+          <div class="ai-trend-value">${escapeHtml(value)}</div>
+          ${spark ? `<div class="ai-trend-spark">${spark}</div>` : ""}
+          ${note}
+        </article>
+      `;
+    }).join("");
+    const head = (data.title || data.asOf) ? `
+        <div class="ai-component-header">
+          <div><h3 class="ai-component-title">${escapeHtml(data.title || "")}</h3></div>
+          ${renderAsOf(data.asOf)}
+        </div>` : "";
+    return `<section class="ai-component ai-trend-grid-wrap" aria-label="${escapeHtml(data.title || "Trend metrics")}">${head}<div class="ai-trend-grid">${cards}</div></section>`;
+  }
+
+  function renderStatusGrid(data) {
+    validateStatusGrid(data);
+    const cards = data.items.map((item) => {
+      const status = item.status;
+      const note = item.note ? `<span class="ai-status-note">${escapeHtml(item.note)}</span>` : "";
+      const value = item.value ? `<span class="ai-status-value">${escapeHtml(item.value)}</span>` : "";
+      return `
+        <article class="ai-status-card ai-status-${status}">
+          <header class="ai-status-head"><span class="ai-status-dot" aria-hidden="true"></span><span class="ai-status-label">${escapeHtml(item.label)}</span></header>
+          ${value}
+          ${note}
+        </article>
+      `;
+    }).join("");
+    const head = (data.title || data.asOf) ? `
+        <div class="ai-component-header">
+          <div><h3 class="ai-component-title">${escapeHtml(data.title || "")}</h3></div>
+          ${renderAsOf(data.asOf)}
+        </div>` : "";
+    return `<section class="ai-component ai-status-grid-wrap" aria-label="${escapeHtml(data.title || "Status grid")}">${head}<div class="ai-status-grid">${cards}</div></section>`;
+  }
+
+  function renderReportHeader(data) {
+    validateReportHeader(data);
+    const meta = [];
+    if (data.period) meta.push(`<span class="ai-rh-chip ai-rh-period">${escapeHtml(data.period)}</span>`);
+    if (data.status) meta.push(`<span class="ai-rh-chip ai-rh-status-${data.status}">${escapeHtml(data.status)}</span>`);
+    if (data.classification) meta.push(`<span class="ai-rh-chip ai-rh-class-${data.classification}">${escapeHtml(data.classification)}</span>`);
+    if (Array.isArray(data.badges)) {
+      data.badges.forEach((b) => meta.push(`<span class="ai-rh-chip ai-rh-tone-${b.tone || "neutral"}">${escapeHtml(b.label)}</span>`));
+    }
+    const info = [];
+    if (data.author) info.push(`<span><span class="ai-rh-key">${currentLocale.startsWith("zh") ? "作者" : "Author"}</span> ${escapeHtml(data.author)}</span>`);
+    if (data.dataAsOf) info.push(`<span><span class="ai-rh-key">${currentLocale.startsWith("zh") ? "数据截至" : "Data as of"}</span> ${escapeHtml(data.dataAsOf)}</span>`);
+    const subtitle = data.subtitle ? `<p class="ai-rh-subtitle">${escapeHtml(data.subtitle)}</p>` : "";
+    return `
+      <section class="ai-report-header" aria-label="Report header">
+        <div class="ai-rh-row">
+          <h2 class="ai-rh-title">${escapeHtml(data.title)}</h2>
+          <div class="ai-rh-chips">${meta.join("")}</div>
+        </div>
+        ${subtitle}
+        ${info.length ? `<div class="ai-rh-info">${info.join("")}</div>` : ""}
+      </section>
+    `;
+  }
+
+  function renderTimeline(data) {
+    validateTimeline(data);
+    const items = data.items.map((item) => {
+      const tone = item.tone || "info";
+      const body = item.body ? `<p class="ai-tl-body">${inlineMarkdown(item.body)}</p>` : "";
+      return `
+        <li class="ai-tl-item ai-tl-${tone}">
+          <span class="ai-tl-dot" aria-hidden="true"></span>
+          <time class="ai-tl-time">${escapeHtml(item.time)}</time>
+          <div class="ai-tl-content">
+            <h4 class="ai-tl-title">${escapeHtml(item.title)}</h4>
+            ${body}
+          </div>
+        </li>
+      `;
+    }).join("");
+    const head = (data.title || data.asOf) ? `
+        <div class="ai-component-header">
+          <div><h3 class="ai-component-title">${escapeHtml(data.title || "")}</h3></div>
+          ${renderAsOf(data.asOf)}
+        </div>` : "";
+    return `<section class="ai-component ai-timeline-wrap">${head}<ol class="ai-timeline">${items}</ol></section>`;
+  }
+
+  function renderActionItems(data) {
+    validateActionItems(data);
+    const today = new Date().toISOString().slice(0, 10);
+    const rows = data.items.map((item) => {
+      const status = item.status || "todo";
+      const priority = item.priority || "";
+      const due = item.due || "";
+      const overdue = due && status !== "done" && due < today;
+      return `
+        <li class="ai-action-item ai-action-${status}${overdue ? " ai-action-overdue" : ""}">
+          <span class="ai-action-status" aria-label="${escapeHtml(status)}">${escapeHtml(status)}</span>
+          ${priority ? `<span class="ai-action-priority ai-action-${priority.toLowerCase()}">${escapeHtml(priority)}</span>` : ""}
+          <span class="ai-action-task">${inlineMarkdown(item.task)}</span>
+          <span class="ai-action-meta">
+            ${item.owner ? `<span class="ai-action-owner">${escapeHtml(item.owner)}</span>` : ""}
+            ${due ? `<span class="ai-action-due${overdue ? " ai-action-due-overdue" : ""}">${escapeHtml(due)}</span>` : ""}
+          </span>
+        </li>
+      `;
+    }).join("");
+    const head = (data.title || data.asOf) ? `
+        <div class="ai-component-header">
+          <div><h3 class="ai-component-title">${escapeHtml(data.title || "")}</h3></div>
+          ${renderAsOf(data.asOf)}
+        </div>` : "";
+    return `<section class="ai-component ai-action-wrap">${head}<ul class="ai-action-list">${rows}</ul></section>`;
+  }
+
+  function renderComparison(data) {
+    validateComparison(data);
+    const recIdx = data.recommended ? data.options.indexOf(data.recommended) : -1;
+    const headers = data.options.map((opt, i) => {
+      const rec = i === recIdx ? ` <span class="ai-cmp-rec-badge">★</span>` : "";
+      return `<th class="${i === recIdx ? "ai-cmp-rec" : ""}">${escapeHtml(opt)}${rec}</th>`;
+    }).join("");
+    const rows = data.criteria.map((c) => {
+      const weight = c.weight !== undefined ? `<span class="ai-cmp-weight">·${formatValue(c.weight, "number", currentLocale)}</span>` : "";
+      const cells = c.values.map((v, j) => {
+        const str = String(v);
+        const cellClass = j === recIdx ? "ai-cmp-rec" : "";
+        const inner = renderBadge(str);
+        return `<td class="${cellClass}">${inner}</td>`;
+      }).join("");
+      return `<tr class="ai-tone-${c.tone || "neutral"}"><th class="ai-cmp-row-head">${escapeHtml(c.label)}${weight}</th>${cells}</tr>`;
+    }).join("");
+    const head = `
+      <div class="ai-component-header">
+        <div>
+          <h3 class="ai-component-title">${escapeHtml(data.title || "Comparison")}</h3>
+          ${data.subtitle ? `<div class="ai-component-subtitle">${escapeHtml(data.subtitle)}</div>` : ""}
+        </div>
+        ${renderAsOf(data.asOf)}
+      </div>`;
+    return `<section class="ai-component ai-comparison-wrap">${head}<div class="ai-table-wrap"><table class="ai-table ai-comparison"><thead><tr><th></th>${headers}</tr></thead><tbody>${rows}</tbody></table></div></section>`;
+  }
+
+  function autoTone(progress) {
+    if (progress >= 0.9) return "good";
+    if (progress >= 0.7) return "warn";
+    return "bad";
+  }
+
+  function toneColor(tone) {
+    if (tone === "good") return "var(--ai-green)";
+    if (tone === "warn") return "var(--ai-yellow)";
+    if (tone === "bad")  return "var(--ai-red)";
+    if (tone === "accent") return "var(--ai-accent)";
+    return "var(--ai-muted)";
+  }
+
+  function renderGauge(data) {
+    validateGauge(data);
+    const cards = data.items.map((item) => {
+      const min = item.min !== undefined ? item.min : 0;
+      const max = item.max !== undefined ? item.max : (item.format === "percent" ? 1 : 100);
+      const target = item.target !== undefined ? item.target : max;
+      const span = max - min;
+      const progress = Math.max(0, Math.min(1, (item.value - min) / span));
+      const targetPct = Math.max(0, Math.min(1, (target - min) / span));
+      const tone = item.tone || autoTone(item.value / target);
+      const color = toneColor(tone);
+      const radius = 45;
+      const arcLen = Math.PI * radius;
+      const fill = (progress * arcLen).toFixed(1);
+      const tx = 55 - radius * Math.cos(Math.PI * targetPct);
+      const ty = 55 - radius * Math.sin(Math.PI * targetPct);
+      const valueText = formatValue(item.value, item.format, currentLocale);
+      const note = item.note ? `<div class="ai-gauge-note">${escapeHtml(item.note)}</div>` : "";
+      return `
+        <article class="ai-gauge-card ai-tone-${tone}">
+          <div class="ai-gauge-label">${escapeHtml(item.label)}</div>
+          <svg class="ai-gauge-svg" viewBox="0 0 110 70" role="img" aria-label="${escapeHtml(item.label + ": " + valueText)}">
+            <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="var(--ai-line)" stroke-width="8" stroke-linecap="round"/>
+            <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${fill} ${arcLen}"/>
+            ${targetPct < 1 ? `<line x1="${tx.toFixed(1)}" y1="${ty.toFixed(1)}" x2="${(55 - (radius - 9) * Math.cos(Math.PI * targetPct)).toFixed(1)}" y2="${(55 - (radius - 9) * Math.sin(Math.PI * targetPct)).toFixed(1)}" stroke="var(--ai-muted)" stroke-width="1.5" stroke-linecap="round"/>` : ""}
+            <text x="55" y="50" text-anchor="middle" font-size="18" font-weight="700" fill="var(--ai-ink)">${escapeHtml(valueText)}</text>
+          </svg>
+          ${note}
+        </article>
+      `;
+    }).join("");
+    const head = (data.title || data.asOf) ? `
+        <div class="ai-component-header">
+          <div><h3 class="ai-component-title">${escapeHtml(data.title || "")}</h3></div>
+          ${renderAsOf(data.asOf)}
+        </div>` : "";
+    return `<section class="ai-component ai-gauge-wrap">${head}<div class="ai-gauge-grid">${cards}</div></section>`;
+  }
+
+  function renderFunnel(data) {
+    validateFunnel(data);
+    const max = data.stages[0].value;
+    const first = max;
+    const rows = data.stages.map((stage, i) => {
+      const width = max > 0 ? (stage.value / max) * 100 : 0;
+      const prevValue = i === 0 ? null : data.stages[i - 1].value;
+      const stepPct = prevValue && prevValue > 0 ? (stage.value / prevValue) : null;
+      const overallPct = first > 0 ? (stage.value / first) : null;
+      const tone = stage.tone || "accent";
+      const color = toneColor(tone);
+      const valueText = formatValue(stage.value, data.format, currentLocale);
+      const stepLabel = stepPct !== null
+        ? `<span class="ai-funnel-step">${currentLocale.startsWith("zh") ? "环比" : "step"} ${(stepPct * 100).toFixed(1)}%</span>`
+        : "";
+      const overallLabel = overallPct !== null && i > 0
+        ? `<span class="ai-funnel-overall">${currentLocale.startsWith("zh") ? "累计" : "overall"} ${(overallPct * 100).toFixed(1)}%</span>`
+        : "";
+      const note = stage.note ? `<span class="ai-funnel-note">${escapeHtml(stage.note)}</span>` : "";
+      return `
+        <div class="ai-funnel-row">
+          <div class="ai-funnel-label">${escapeHtml(stage.label)}${note}</div>
+          <div class="ai-funnel-track">
+            <div class="ai-funnel-bar" style="width:${width.toFixed(1)}%;background:${color};"><span class="ai-funnel-value">${escapeHtml(valueText)}</span></div>
+          </div>
+          <div class="ai-funnel-conv">${stepLabel}${overallLabel}</div>
+        </div>
+      `;
+    }).join("");
+    const head = `
+      <div class="ai-component-header">
+        <div>
+          <h3 class="ai-component-title">${escapeHtml(data.title || (currentLocale.startsWith("zh") ? "漏斗" : "Funnel"))}</h3>
+          ${data.subtitle ? `<div class="ai-component-subtitle">${escapeHtml(data.subtitle)}</div>` : ""}
+        </div>
+        ${renderAsOf(data.asOf)}
+      </div>`;
+    return `<section class="ai-component ai-funnel-wrap">${head}<div class="ai-funnel">${rows}</div></section>`;
+  }
+
+  function renderWaterfall(data) {
+    validateWaterfall(data);
+    const W = 640, H = 280, padL = 16, padR = 16, padT = 24, padB = 56;
+    const plotW = W - padL - padR;
+    const plotH = H - padT - padB;
+    const bars = data.bars;
+    const n = bars.length;
+    let cumulative = 0;
+    const positions = bars.map((bar) => {
+      if (bar.kind === "start" || bar.kind === "subtotal" || bar.kind === "end") {
+        const from = 0;
+        const to = bar.value;
+        cumulative = bar.value;
+        return { from, to, kind: bar.kind };
+      }
+      const from = cumulative;
+      const to = cumulative + bar.value;
+      cumulative = to;
+      return { from, to, kind: bar.kind };
+    });
+    let lo = 0, hi = 0;
+    positions.forEach((p) => { lo = Math.min(lo, p.from, p.to); hi = Math.max(hi, p.from, p.to); });
+    if (lo === hi) hi = lo + 1;
+    const yScale = (v) => padT + (1 - (v - lo) / (hi - lo)) * plotH;
+    const bw = plotW / n * 0.62;
+    const gap = plotW / n;
+    const svgBars = positions.map((p, i) => {
+      const x = padL + gap * i + (gap - bw) / 2;
+      const y1 = yScale(p.from), y2 = yScale(p.to);
+      const top = Math.min(y1, y2);
+      const h = Math.max(2, Math.abs(y2 - y1));
+      const color = p.kind === "down" ? "var(--ai-red)" : (p.kind === "up" ? "var(--ai-green)" : "var(--ai-accent)");
+      const valueText = formatValue(bars[i].value, data.format, currentLocale);
+      const labelY = y2 < y1 ? (top - 6) : (top + h + 14);
+      return `
+        <rect x="${x.toFixed(1)}" y="${top.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="${color}" rx="2"/>
+        <text x="${(x + bw / 2).toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="11" fill="var(--ai-ink)">${escapeHtml(valueText)}</text>
+        <text x="${(x + bw / 2).toFixed(1)}" y="${(H - padB + 16).toFixed(1)}" text-anchor="middle" font-size="11" fill="var(--ai-muted)">${escapeHtml(truncateLabel(bars[i].label, 14))}</text>
+      `;
+    });
+    const connectors = positions.slice(0, -1).map((p, i) => {
+      const next = positions[i + 1];
+      if (next.kind === "start" || next.kind === "subtotal" || next.kind === "end") return "";
+      const x1 = padL + gap * i + (gap - bw) / 2 + bw;
+      const x2 = padL + gap * (i + 1) + (gap - bw) / 2;
+      const y = yScale(p.to);
+      return `<line x1="${x1.toFixed(1)}" y1="${y.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--ai-line)" stroke-dasharray="3 3" stroke-width="1.5"/>`;
+    });
+    const head = `
+      <div class="ai-component-header">
+        <div>
+          <h3 class="ai-component-title">${escapeHtml(data.title || (currentLocale.startsWith("zh") ? "瀑布图" : "Waterfall"))}</h3>
+          ${data.subtitle ? `<div class="ai-component-subtitle">${escapeHtml(data.subtitle)}</div>` : ""}
+        </div>
+        ${renderAsOf(data.asOf)}
+      </div>`;
+    return `<section class="ai-component ai-waterfall-wrap">${head}<div class="ai-chart-wrap"><svg class="ai-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${escapeHtml(data.title || "Waterfall")}">${connectors.join("")}${svgBars.join("")}</svg></div></section>`;
+  }
+
+  function renderHeatmap(data) {
+    validateHeatmap(data);
+    const tone = data.tone || "accent";
+    const colorVar = toneColor(tone);
+    let lo = Infinity, hi = -Infinity;
+    data.rows.forEach((row) => row.forEach((v) => { if (v < lo) lo = v; if (v > hi) hi = v; }));
+    if (lo === hi) hi = lo + 1;
+    const cols = data.xLabels.length;
+    const rowsCount = data.yLabels.length;
+    const cellW = 32, cellH = 22;
+    const padL = 76, padT = 28;
+    const W = padL + cols * cellW + 8;
+    const H = padT + rowsCount * cellH + 8;
+    const xHeaders = data.xLabels.map((l, i) => `<text x="${padL + i * cellW + cellW / 2}" y="${padT - 8}" text-anchor="middle" font-size="11" fill="var(--ai-muted)">${escapeHtml(truncateLabel(l, 6))}</text>`).join("");
+    const yHeaders = data.yLabels.map((l, j) => `<text x="${padL - 6}" y="${padT + j * cellH + cellH / 2 + 4}" text-anchor="end" font-size="11" fill="var(--ai-muted)">${escapeHtml(truncateLabel(l, 10))}</text>`).join("");
+    const cells = data.rows.map((row, j) => row.map((v, i) => {
+      const t = (v - lo) / (hi - lo);
+      const opacity = (0.08 + 0.92 * t).toFixed(2);
+      const title = `${data.yLabels[j]} · ${data.xLabels[i]}: ${formatValue(v, data.format, currentLocale)}`;
+      return `<rect x="${padL + i * cellW + 1}" y="${padT + j * cellH + 1}" width="${cellW - 2}" height="${cellH - 2}" rx="2" fill="${colorVar}" fill-opacity="${opacity}"><title>${escapeHtml(title)}</title></rect>`;
+    }).join("")).join("");
+    const legendMin = formatValue(lo, data.format, currentLocale);
+    const legendMax = formatValue(hi, data.format, currentLocale);
+    const head = `
+      <div class="ai-component-header">
+        <div>
+          <h3 class="ai-component-title">${escapeHtml(data.title || (currentLocale.startsWith("zh") ? "热力图" : "Heatmap"))}</h3>
+          ${data.subtitle ? `<div class="ai-component-subtitle">${escapeHtml(data.subtitle)}</div>` : ""}
+        </div>
+        ${renderAsOf(data.asOf)}
+      </div>`;
+    const legend = `<div class="ai-heat-legend"><span>${escapeHtml(legendMin)}</span><span class="ai-heat-bar" style="background:linear-gradient(to right, ${colorVar} 8%, ${colorVar} 100%);opacity:1;"></span><span>${escapeHtml(legendMax)}</span></div>`;
+    return `<section class="ai-component ai-heatmap-wrap">${head}<div class="ai-chart-wrap"><svg class="ai-chart-svg" viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet">${xHeaders}${yHeaders}${cells}</svg></div>${legend}</section>`;
+  }
+
+  function renderMatrix(data) {
+    validateMatrix(data);
+    const xMin = data.xMin !== undefined ? data.xMin : 0;
+    const xMax = data.xMax !== undefined ? data.xMax : 10;
+    const yMin = data.yMin !== undefined ? data.yMin : 0;
+    const yMax = data.yMax !== undefined ? data.yMax : 10;
+    const W = 640, H = 360, padL = 56, padR = 24, padT = 24, padB = 44;
+    const plotW = W - padL - padR;
+    const plotH = H - padT - padB;
+    const xScale = (v) => padL + ((v - xMin) / (xMax - xMin)) * plotW;
+    const yScale = (v) => padT + plotH - ((v - yMin) / (yMax - yMin)) * plotH;
+    const midX = xScale((xMin + xMax) / 2);
+    const midY = yScale((yMin + yMax) / 2);
+    const quad = data.quadrants || [];
+    const quadLabels = quad.length === 4 ? [
+      `<text x="${padL + 8}" y="${padT + 16}" font-size="11" font-weight="600" fill="var(--ai-muted)">${escapeHtml(quad[0])}</text>`,
+      `<text x="${padL + plotW - 8}" y="${padT + 16}" text-anchor="end" font-size="11" font-weight="600" fill="var(--ai-muted)">${escapeHtml(quad[1])}</text>`,
+      `<text x="${padL + 8}" y="${padT + plotH - 8}" font-size="11" font-weight="600" fill="var(--ai-muted)">${escapeHtml(quad[2])}</text>`,
+      `<text x="${padL + plotW - 8}" y="${padT + plotH - 8}" text-anchor="end" font-size="11" font-weight="600" fill="var(--ai-muted)">${escapeHtml(quad[3])}</text>`
+    ].join("") : "";
+    const axes = `
+      <rect x="${padL}" y="${padT}" width="${plotW}" height="${plotH}" fill="var(--ai-panel-soft)" stroke="var(--ai-line)" rx="4"/>
+      <line x1="${midX}" y1="${padT}" x2="${midX}" y2="${padT + plotH}" stroke="var(--ai-line)" stroke-dasharray="4 4"/>
+      <line x1="${padL}" y1="${midY}" x2="${padL + plotW}" y2="${midY}" stroke="var(--ai-line)" stroke-dasharray="4 4"/>
+    `;
+    const xAxisLabel = data.xLabel ? `<text x="${padL + plotW / 2}" y="${H - 8}" text-anchor="middle" font-size="12" fill="var(--ai-muted)">${escapeHtml(data.xLabel)} →</text>` : "";
+    const yAxisLabel = data.yLabel ? `<text x="${20}" y="${padT + plotH / 2}" text-anchor="middle" font-size="12" fill="var(--ai-muted)" transform="rotate(-90 20 ${padT + plotH / 2})">${escapeHtml(data.yLabel)} →</text>` : "";
+    const points = data.items.map((item) => {
+      const cx = xScale(item.x);
+      const cy = yScale(item.y);
+      const color = toneColor(item.tone || "accent");
+      const tip = item.note ? ` · ${item.note}` : "";
+      return `
+        <g class="ai-matrix-pt">
+          <circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="6" fill="${color}" fill-opacity="0.92" stroke="var(--ai-panel)" stroke-width="2"><title>${escapeHtml(item.label + ` (${item.x}, ${item.y})` + tip)}</title></circle>
+          <text x="${(cx + 9).toFixed(1)}" y="${(cy + 4).toFixed(1)}" font-size="11" fill="var(--ai-ink)">${escapeHtml(truncateLabel(item.label, 22))}</text>
+        </g>
+      `;
+    }).join("");
+    const head = `
+      <div class="ai-component-header">
+        <div>
+          <h3 class="ai-component-title">${escapeHtml(data.title || (currentLocale.startsWith("zh") ? "2×2 矩阵" : "2×2 matrix"))}</h3>
+          ${data.subtitle ? `<div class="ai-component-subtitle">${escapeHtml(data.subtitle)}</div>` : ""}
+        </div>
+        ${renderAsOf(data.asOf)}
+      </div>`;
+    return `<section class="ai-component ai-matrix-wrap">${head}<div class="ai-chart-wrap"><svg class="ai-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${escapeHtml(data.title || "Matrix")}">${axes}${quadLabels}${xAxisLabel}${yAxisLabel}${points}</svg></div></section>`;
+  }
+
   COMPONENTS.set("table@1", renderTable);
   COMPONENTS.set("metric-cards@1", (_type, data) => renderMetricCards(data));
   COMPONENTS.set("callout@1", (_type, data) => renderCallout(data));
   COMPONENTS.set("chart@1", (_type, data) => renderChart(data));
+  COMPONENTS.set("trend-card@1", (_type, data) => renderTrendCard(data));
+  COMPONENTS.set("status-grid@1", (_type, data) => renderStatusGrid(data));
+  COMPONENTS.set("report-header@1", (_type, data) => renderReportHeader(data));
+  COMPONENTS.set("timeline@1", (_type, data) => renderTimeline(data));
+  COMPONENTS.set("action-items@1", (_type, data) => renderActionItems(data));
+  COMPONENTS.set("comparison@1", (_type, data) => renderComparison(data));
+  COMPONENTS.set("gauge@1", (_type, data) => renderGauge(data));
+  COMPONENTS.set("funnel@1", (_type, data) => renderFunnel(data));
+  COMPONENTS.set("waterfall@1", (_type, data) => renderWaterfall(data));
+  COMPONENTS.set("heatmap@1", (_type, data) => renderHeatmap(data));
+  COMPONENTS.set("matrix@1", (_type, data) => renderMatrix(data));
+
+  const RUNTIME_VERSION = "v0.4.0";
+
+  const BUILTIN_LANG_ALIAS = {
+    js: "js", javascript: "js", jsx: "js", mjs: "js", cjs: "js",
+    ts: "js", typescript: "js", tsx: "js",
+    py: "python", python: "python",
+    sh: "bash", bash: "bash", shell: "bash", zsh: "bash", console: "bash",
+    yml: "yaml", yaml: "yaml",
+    json: "json", json5: "json",
+    diff: "diff", patch: "diff"
+  };
+
+  const LAZY_LANG_ALIAS = {
+    go: "go", golang: "go",
+    rust: "rust", rs: "rust",
+    php: "php",
+    ruby: "ruby", rb: "ruby",
+    java: "java",
+    kotlin: "kotlin", kt: "kotlin",
+    swift: "swift",
+    c: "c",
+    cpp: "cpp", "c++": "cpp", cxx: "cpp", cc: "cpp", hpp: "cpp",
+    csharp: "csharp", cs: "csharp", "c#": "csharp",
+    sql: "sql", mysql: "sql", postgres: "sql", postgresql: "sql", sqlite: "sql", plsql: "sql",
+    html: "html", htm: "html",
+    css: "css",
+    xml: "xml", svg: "xml", xhtml: "xml",
+    dockerfile: "dockerfile", docker: "dockerfile",
+    toml: "toml",
+    ini: "ini", conf: "ini", cfg: "ini",
+    lua: "lua",
+    perl: "perl", pl: "perl",
+    r: "r", rscript: "r",
+    scala: "scala",
+    dart: "dart",
+    regex: "regex", regexp: "regex",
+    graphql: "graphql", gql: "graphql"
+  };
+
+  const LANG_ALIAS = Object.assign({}, BUILTIN_LANG_ALIAS, LAZY_LANG_ALIAS);
+  const LAZY_LANGS = new Set(Object.values(LAZY_LANG_ALIAS));
+
+  const HL_RULES = {
+    json: [
+      ["cmt",  /\/\/[^\n]*|\/\*[\s\S]*?\*\//],
+      ["str",  /"(?:[^"\\\n]|\\.)*"/],
+      ["num",  /-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b/],
+      ["bool", /\b(?:true|false|null)\b/]
+    ],
+    bash: [
+      ["cmt",  /#[^\n]*/],
+      ["str",  /"(?:[^"\\\n]|\\.)*"|'[^'\n]*'|`(?:[^`\\\n]|\\.)*`/],
+      ["var",  /\$\{[^}\n]+\}|\$[A-Za-z_]\w*|\$\d+/],
+      ["kw",   /\b(?:if|then|elif|else|fi|for|while|until|do|done|case|esac|in|function|return|export|local|readonly|set|unset|source|exit|trap|alias|declare|select|break|continue|shift)\b/],
+      ["fn",   /\b(?:echo|printf|cd|ls|cp|mv|rm|cat|grep|egrep|fgrep|sed|awk|find|xargs|curl|wget|npm|node|yarn|pnpm|git|docker|kubectl|sudo|chmod|chown|tar|gzip|gunzip|unzip|mkdir|rmdir|touch|brew|apt|yum|dnf|systemctl|service|ps|kill|killall|top|df|du|free|uname|whoami|date|hostname|test|read|let|eval|jq|tr|cut|sort|uniq|head|tail|wc|tee|env|which|type|exec|nohup|bash|sh|zsh)\b/],
+      ["num",  /\b\d+\b/]
+    ],
+    python: [
+      ["cmt",  /#[^\n]*/],
+      ["str",  /(?:[fFrRbBuU]{1,2})?(?:"""[\s\S]*?"""|'''[\s\S]*?'''|"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')/],
+      ["meta", /@[A-Za-z_]\w*/],
+      ["kw",   /\b(?:def|class|if|elif|else|return|import|from|as|with|try|except|finally|raise|yield|lambda|pass|break|continue|for|while|in|not|and|or|is|async|await|global|nonlocal|assert|del|match|case)\b/],
+      ["bool", /\b(?:None|True|False|self|cls)\b/],
+      ["fn",   /\b(?:print|len|range|int|str|list|dict|tuple|set|frozenset|float|bool|bytes|bytearray|memoryview|isinstance|issubclass|type|input|open|enumerate|zip|map|filter|sorted|reversed|sum|min|max|abs|round|pow|divmod|chr|ord|hex|bin|oct|repr|format|getattr|setattr|hasattr|delattr|dir|vars|callable|super|object|any|all|next|iter|exec|eval|id|globals|locals|property|staticmethod|classmethod|complex|slice|hash)\b/],
+      ["num",  /\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b|\b0[xX][0-9a-fA-F]+\b/]
+    ],
+    js: [
+      ["cmt",  /\/\/[^\n]*|\/\*[\s\S]*?\*\//],
+      ["str",  /"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`/],
+      ["kw",   /\b(?:function|var|let|const|if|else|return|for|while|do|switch|case|break|continue|new|delete|typeof|instanceof|in|of|class|extends|super|this|throw|try|catch|finally|import|export|from|as|default|async|await|yield|static|public|private|protected|readonly|abstract|interface|implements|enum|namespace|declare|type|void|module|package)\b/],
+      ["bool", /\b(?:null|undefined|true|false|NaN|Infinity)\b/],
+      ["type", /\b(?:string|number|boolean|any|unknown|never|object|symbol|bigint|Promise|Array|Map|Set|Record|Partial|Readonly|Pick|Omit|Required|ReturnType|Awaited)\b/],
+      ["num",  /\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b|\b0[xX][0-9a-fA-F]+\b/]
+    ],
+    yaml: [
+      ["cmt",  /#[^\n]*/],
+      ["key",  /^[ \t-]*[A-Za-z_][\w.-]*(?=\s*:)/m],
+      ["str",  /"(?:[^"\\\n]|\\.)*"|'[^'\n]*'/],
+      ["bool", /\b(?:true|false|null|yes|no|on|off|~)\b/i],
+      ["num",  /\b\d+(?:\.\d+)?\b/],
+      ["meta", /[&*][\w.-]+/]
+    ]
+  };
+
+  const COMBINED_HL = {};
+  function combinedRegex(lang) {
+    if (COMBINED_HL[lang]) return COMBINED_HL[lang];
+    const rules = HL_RULES[lang];
+    if (!rules) return null;
+    const parts = rules.map(([cls, re]) => `(?<${cls}>${re.source})`);
+    COMBINED_HL[lang] = new RegExp(parts.join("|"), "gm");
+    return COMBINED_HL[lang];
+  }
+
+  function highlightDiffLines(code) {
+    return code.split("\n").map((line) => {
+      let cls = "";
+      if (/^\+{3}\s/.test(line) || /^-{3}\s/.test(line)) cls = "tk-diff-file";
+      else if (/^@@/.test(line)) cls = "tk-diff-hunk";
+      else if (/^\+/.test(line)) cls = "tk-diff-add";
+      else if (/^-/.test(line)) cls = "tk-diff-del";
+      return cls ? `<span class="${cls}">${escapeHtml(line)}</span>` : escapeHtml(line);
+    }).join("\n");
+  }
+
+  function highlightCode(code, lang) {
+    const canonical = LANG_ALIAS[(lang || "").toLowerCase()];
+    if (!canonical) return escapeHtml(code);
+    if (canonical === "diff") return highlightDiffLines(code);
+    const re = combinedRegex(canonical);
+    if (!re) return escapeHtml(code);
+    re.lastIndex = 0;
+    let out = "";
+    let pos = 0;
+    let m;
+    while ((m = re.exec(code)) !== null) {
+      if (m[0].length === 0) { re.lastIndex++; continue; }
+      if (m.index > pos) out += escapeHtml(code.slice(pos, m.index));
+      const groups = m.groups || {};
+      let cls = null;
+      for (const k in groups) if (groups[k] != null) { cls = k; break; }
+      out += cls ? `<span class="tk-${cls}">${escapeHtml(m[0])}</span>` : escapeHtml(m[0]);
+      pos = m.index + m[0].length;
+    }
+    if (pos < code.length) out += escapeHtml(code.slice(pos));
+    return out;
+  }
+
+  function renderCodeBlock(code, lang) {
+    const canonical = LANG_ALIAS[(lang || "").toLowerCase()] || "";
+    const isPending = canonical && LAZY_LANGS.has(canonical) && !HL_RULES[canonical];
+    const highlighted = isPending ? escapeHtml(code) : highlightCode(code, lang);
+    const langLabel = lang ? lang : "";
+    const head = langLabel
+      ? `<header class="ai-codeblock-head"><span class="ai-codeblock-lang">${escapeHtml(langLabel)}</span><button class="ai-codeblock-copy" type="button" data-ai-copy-code aria-label="${escapeHtml(L("copyCode"))}">${escapeHtml(L("copyCode"))}</button></header>`
+      : "";
+    const codeClass = canonical ? ` class="lang-${escapeHtml(canonical)}"` : "";
+    const pendingAttr = isPending ? ` data-lang-pending="${escapeHtml(canonical)}"` : "";
+    return `<figure class="ai-codeblock"${langLabel ? ` data-lang="${escapeHtml(langLabel)}"` : ""}${pendingAttr}>${head}<pre><code${codeClass}>${highlighted}</code></pre></figure>`;
+  }
+
+  const LOADING_LANGS = new Map();
+  let langBaseUrlOverride = null;
+
+  function resolveLangBaseUrl() {
+    if (langBaseUrlOverride) return langBaseUrlOverride;
+    if (typeof document !== "undefined" && document.currentScript && document.currentScript.src) {
+      try {
+        return new URL("./lang", document.currentScript.src).href.replace(/\/$/, "");
+      } catch (_) { /* fall through */ }
+    }
+    return `https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@${RUNTIME_VERSION}/assets/lang`;
+  }
+
+  function isSafeLangUrl(url) {
+    try {
+      const u = new URL(url);
+      if (u.protocol !== "https:" && u.protocol !== "http:" && u.protocol !== "file:") return false;
+      if (!/^[A-Za-z0-9._~\-:\/?#@!$&()*+,;=%]+$/.test(url)) return false;
+      return true;
+    } catch (_) { return false; }
+  }
+
+  function loadLanguage(canonical) {
+    if (HL_RULES[canonical]) return Promise.resolve(true);
+    if (!LAZY_LANGS.has(canonical)) return Promise.resolve(false);
+    if (LOADING_LANGS.has(canonical)) return LOADING_LANGS.get(canonical);
+    if (typeof document === "undefined") return Promise.resolve(false);
+    const base = resolveLangBaseUrl();
+    const url = `${base}/${canonical}.js`;
+    if (!isSafeLangUrl(url)) return Promise.resolve(false);
+    const promise = new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = url;
+      script.async = true;
+      script.onload = () => resolve(true);
+      script.onerror = () => { LOADING_LANGS.delete(canonical); resolve(false); };
+      (document.head || document.documentElement).appendChild(script);
+    });
+    LOADING_LANGS.set(canonical, promise);
+    return promise;
+  }
+
+  function upgradePendingBlocks(canonical, root) {
+    if (typeof document === "undefined") return;
+    const scope = root || document;
+    scope.querySelectorAll(`figure.ai-codeblock[data-lang-pending="${canonical}"]`).forEach((fig) => {
+      const codeEl = fig.querySelector("pre > code");
+      if (!codeEl) return;
+      const raw = codeEl.textContent;
+      codeEl.innerHTML = highlightCode(raw, canonical);
+      fig.removeAttribute("data-lang-pending");
+    });
+  }
+
+  function registerLanguage(spec) {
+    if (!spec || typeof spec !== "object") return;
+    const name = String(spec.name || "").toLowerCase();
+    if (!name || !Array.isArray(spec.rules)) return;
+    HL_RULES[name] = spec.rules;
+    delete COMBINED_HL[name];
+    LANG_ALIAS[name] = name;
+    if (Array.isArray(spec.aliases)) {
+      spec.aliases.forEach((alias) => {
+        if (typeof alias === "string") LANG_ALIAS[alias.toLowerCase()] = name;
+      });
+    }
+    LAZY_LANGS.add(name);
+    upgradePendingBlocks(name);
+  }
+
+  function flushLanguageQueue() {
+    if (typeof window === "undefined") return;
+    const queue = window.__AIO_LANG_QUEUE;
+    if (!Array.isArray(queue)) return;
+    while (queue.length) {
+      try { registerLanguage(queue.shift()); } catch (_) { /* skip */ }
+    }
+  }
+
+  function kickLazyLoads(root) {
+    if (typeof document === "undefined") return;
+    const pending = new Set();
+    root.querySelectorAll("figure.ai-codeblock[data-lang-pending]").forEach((fig) => {
+      const c = fig.getAttribute("data-lang-pending");
+      if (c) pending.add(c);
+    });
+    pending.forEach((canonical) => {
+      loadLanguage(canonical).then((ok) => {
+        if (ok) upgradePendingBlocks(canonical, root);
+      });
+    });
+  }
 
   function renderToken(token, headingCounts) {
     if (token.type === "heading") {
@@ -1239,7 +2786,7 @@
           `;
         }
       }
-      return `<pre><code>${escapeHtml(token.code)}</code></pre>`;
+      return renderCodeBlock(token.code, token.lang);
     }
     return "";
   }
@@ -1268,10 +2815,31 @@
       });
     });
 
+    root.querySelectorAll("[data-ai-copy-code]").forEach((btn) => {
+      const original = btn.textContent;
+      btn.addEventListener("click", async () => {
+        if (!navigator.clipboard) return;
+        const block = btn.closest(".ai-codeblock");
+        const codeEl = block && block.querySelector("pre code");
+        if (!codeEl) return;
+        try {
+          await navigator.clipboard.writeText(codeEl.textContent);
+          btn.textContent = L("copied");
+          btn.classList.add("copied");
+          setTimeout(() => {
+            btn.textContent = original;
+            btn.classList.remove("copied");
+          }, 1200);
+        } catch (_) { /* clipboard denied */ }
+      });
+    });
   }
 
   function render(markdown, options) {
     options = options || {};
+    if (options.langBaseUrl && isSafeLangUrl(options.langBaseUrl)) {
+      langBaseUrlOverride = options.langBaseUrl.replace(/\/$/, "");
+    }
     const docLang = (typeof document !== "undefined" && document.documentElement && document.documentElement.lang) || "";
     currentLocale = resolveLocale(options.locale || docLang);
     installStyles();
@@ -1293,6 +2861,7 @@
               <span>${escapeHtml(L("brandTagline"))}</span>
             </div>
             <div class="ai-actions">
+              <button class="ai-button" type="button" data-ai-skim aria-label="${escapeHtml(L("skimMode"))}">${escapeHtml(L("skimMode"))}</button>
               <button class="ai-button" type="button" data-ai-theme-toggle aria-label="${escapeHtml(L("toggleTheme"))}">${escapeHtml(L("toggleTheme"))}</button>
               <button class="ai-button" type="button" data-ai-copy-source>${escapeHtml(L("copySource"))}</button>
               <button class="ai-button" type="button" data-ai-toggle-source>${escapeHtml(L("viewSource"))}</button>
@@ -1316,12 +2885,27 @@
       const opened = sourcePanel.classList.toggle("visible");
       toggleSourceBtn.textContent = opened ? L("hideSource") : L("viewSource");
     });
-    target.querySelector("[data-ai-copy-source]").addEventListener("click", async () => {
+    const copySourceBtn = target.querySelector("[data-ai-copy-source]");
+    const copySourceLabel = copySourceBtn.textContent;
+    copySourceBtn.addEventListener("click", async () => {
       if (!navigator.clipboard) return;
-      await navigator.clipboard.writeText(markdown);
+      try {
+        await navigator.clipboard.writeText(markdown);
+        copySourceBtn.textContent = L("copied");
+        copySourceBtn.classList.add("copied");
+        setTimeout(() => {
+          copySourceBtn.textContent = copySourceLabel;
+          copySourceBtn.classList.remove("copied");
+        }, 1200);
+      } catch (_) { /* clipboard denied */ }
     });
     target.querySelector("[data-ai-print]").addEventListener("click", () => {
       window.print();
+    });
+    const skimBtn = target.querySelector("[data-ai-skim]");
+    skimBtn.addEventListener("click", () => {
+      const active = document.body.classList.toggle("ai-skim");
+      skimBtn.classList.toggle("ai-skim-on", active);
     });
     target.querySelector("[data-ai-theme-toggle]").addEventListener("click", () => {
       const cur = document.documentElement.getAttribute("data-ai-theme");
@@ -1329,13 +2913,23 @@
       if (next) document.documentElement.setAttribute("data-ai-theme", next);
       else document.documentElement.removeAttribute("data-ai-theme");
     });
+    flushLanguageQueue();
+    kickLazyLoads(target);
   }
 
   window.AIOutputRuntime = {
     render,
     parseMarkdown,
+    registerLanguage,
+    version: RUNTIME_VERSION,
+    languages: Object.keys(LANG_ALIAS).reduce((acc, alias) => {
+      const c = LANG_ALIAS[alias];
+      (acc[c] = acc[c] || []).push(alias);
+      return acc;
+    }, {}),
     components: Array.from(COMPONENTS.keys())
   };
+  flushLanguageQueue();
 })();
 </script>
 </head>

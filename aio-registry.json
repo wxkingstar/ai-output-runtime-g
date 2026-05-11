@@ -1,5 +1,5 @@
 {
-  "version": "0.2.2",
+  "version": "0.4.0",
   "namespace": "aio",
   "stable": [
     {
@@ -25,6 +25,83 @@
       "spec": "specs/chart-v1.md",
       "introducedIn": "0.2.0",
       "note": "Candidate. Schema is final but may receive optional fields in minor revisions before promotion to stable."
+    },
+    {
+      "info": "aio:trend-card@1",
+      "schema": "schemas/trend-card-v1.schema.json",
+      "spec": "specs/trend-card-v1.md",
+      "introducedIn": "0.4.0",
+      "note": "Candidate. metric-cards 的进化版：支持 delta、sparkline、locale 格式化。"
+    },
+    {
+      "info": "aio:status-grid@1",
+      "schema": "schemas/status-grid-v1.schema.json",
+      "spec": "specs/status-grid-v1.md",
+      "introducedIn": "0.4.0",
+      "note": "Candidate. 多服务/项目状态盘点（good/warn/bad/neutral/info）。"
+    },
+    {
+      "info": "aio:report-header@1",
+      "schema": "schemas/report-header-v1.schema.json",
+      "spec": "specs/report-header-v1.md",
+      "introducedIn": "0.4.0",
+      "note": "Candidate. 报告抬头：title/period/author/status/dataAsOf/classification。也是 markdown YAML frontmatter 的渲染目标。"
+    },
+    {
+      "info": "aio:timeline@1",
+      "schema": "schemas/timeline-v1.schema.json",
+      "spec": "specs/timeline-v1.md",
+      "introducedIn": "0.4.0",
+      "note": "Candidate. 纵向时间线，适合 postmortem/复盘/周报大事记。"
+    },
+    {
+      "info": "aio:action-items@1",
+      "schema": "schemas/action-items-v1.schema.json",
+      "spec": "specs/action-items-v1.md",
+      "introducedIn": "0.4.0",
+      "note": "Candidate. 行动项清单：负责人/截止日/状态/优先级，自动标红过期项。"
+    },
+    {
+      "info": "aio:comparison@1",
+      "schema": "schemas/comparison-v1.schema.json",
+      "spec": "specs/comparison-v1.md",
+      "introducedIn": "0.4.0",
+      "note": "Candidate. 方案/竞品对比矩阵：维度 × 选项，支持权重和推荐项高亮。"
+    },
+    {
+      "info": "aio:gauge@1",
+      "schema": "schemas/gauge-v1.schema.json",
+      "spec": "specs/gauge-v1.md",
+      "introducedIn": "0.4.0",
+      "note": "Candidate. 半圆弧仪表，多个 KPI/OKR 达成度一屏盘点。"
+    },
+    {
+      "info": "aio:funnel@1",
+      "schema": "schemas/funnel-v1.schema.json",
+      "spec": "specs/funnel-v1.md",
+      "introducedIn": "0.4.0",
+      "note": "Candidate. 转化漏斗：每段水平条 + 自动 step/overall 转化率。"
+    },
+    {
+      "info": "aio:waterfall@1",
+      "schema": "schemas/waterfall-v1.schema.json",
+      "spec": "specs/waterfall-v1.md",
+      "introducedIn": "0.4.0",
+      "note": "Candidate. 财务 P&L 桥 / 变动归因瀑布图，up/down/subtotal/end 四种 kind。"
+    },
+    {
+      "info": "aio:heatmap@1",
+      "schema": "schemas/heatmap-v1.schema.json",
+      "spec": "specs/heatmap-v1.md",
+      "introducedIn": "0.4.0",
+      "note": "Candidate. 二维密度热力图（小时×星期、地区×品类等）。"
+    },
+    {
+      "info": "aio:matrix@1",
+      "schema": "schemas/matrix-v1.schema.json",
+      "spec": "specs/matrix-v1.md",
+      "introducedIn": "0.4.0",
+      "note": "Candidate. 2×2 象限分析（风险矩阵、RICE、BCG、影响×投入）。"
     }
   ]
 }

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-output.dev/schemas/funnel-v1.schema.json",
+  "title": "aio:funnel@1",
+  "description": "Structural shape for aio:funnel@1. The CLI at scripts/aio.mjs is the source of truth for invariants — notably that stage values must be monotonic non-increasing.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "title":    { "type": "string", "maxLength": 100, "pattern": "^[^<>]*$" },
+    "subtitle": { "type": "string", "maxLength": 160, "pattern": "^[^<>]*$" },
+    "asOf":     { "type": "string", "maxLength": 40,  "pattern": "^[^<>]*$" },
+    "format":   { "type": "string", "pattern": "^(?:raw|number|percent|compact|currency:[A-Z]{3})$" },
+    "stages": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label": { "type": "string", "maxLength": 80, "pattern": "^[^<>]*$" },
+          "value": { "type": "number", "minimum": 0 },
+          "tone":  { "type": "string", "enum": ["neutral", "good", "warn", "bad"] },
+          "note":  { "type": "string", "maxLength": 140, "pattern": "^[^<>]*$" }
+        },
+        "required": ["label", "value"]
+      }
+    }
+  },
+  "required": ["stages"]
+}

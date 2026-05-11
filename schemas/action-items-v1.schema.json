@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-output.dev/schemas/action-items-v1.schema.json",
+  "title": "aio:action-items@1",
+  "description": "Structural shape for aio:action-items@1. The CLI at scripts/aio.mjs is the source of truth for invariants and for overdue auto-highlighting.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "title": { "type": "string", "maxLength": 100, "pattern": "^[^<>]*$" },
+    "asOf":  { "type": "string", "maxLength": 40,  "pattern": "^[^<>]*$" },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "task":     { "type": "string", "maxLength": 240, "pattern": "^[^<>]*$" },
+          "owner":    { "type": "string", "maxLength": 60,  "pattern": "^[^<>]*$" },
+          "due":      { "type": "string", "maxLength": 30,  "pattern": "^[^<>]*$" },
+          "status":   { "type": "string", "enum": ["todo", "doing", "done", "blocked"] },
+          "priority": { "type": "string", "enum": ["P0", "P1", "P2", "P3"] }
+        },
+        "required": ["task"]
+      }
+    }
+  },
+  "required": ["items"]
+}

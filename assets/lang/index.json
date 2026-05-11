@@ -1,0 +1,234 @@
+{
+  "runtime": "v0.4.0",
+  "generatedAt": "2026-05-11T15:16:16.205Z",
+  "languages": {
+    "c": {
+      "file": "c.js",
+      "aliases": [
+        "c"
+      ],
+      "bytes": 1242,
+      "integrity": "sha384-uCegCmrvjwVZQIhbGi7Kp3O9McLySoQruFBdO9XaXhoA/RudEwgCMw0S6ouF4Yao"
+    },
+    "cpp": {
+      "file": "cpp.js",
+      "aliases": [
+        "cpp",
+        "c++",
+        "cxx",
+        "cc",
+        "hpp"
+      ],
+      "bytes": 1826,
+      "integrity": "sha384-1vhPg1mc+Cqit7JbFYyvPbTtooyVO0YePljwBseSdSXkuIrWJDkg+zDYTQulY0D0"
+    },
+    "csharp": {
+      "file": "csharp.js",
+      "aliases": [
+        "csharp",
+        "cs",
+        "c#"
+      ],
+      "bytes": 1597,
+      "integrity": "sha384-ZqjSv1ipKQkng+N5QcXTcqryQJW4HiIvA43srf4uz8UXQ1aihxojxZK2ncGl8Sik"
+    },
+    "css": {
+      "file": "css.js",
+      "aliases": [
+        "css"
+      ],
+      "bytes": 1233,
+      "integrity": "sha384-OFzW5ra8nPWCi23+qy6FJd4crzpk6JiOr5ZpN56DrL1qQeWVMhfr1o0mKrISab7M"
+    },
+    "dart": {
+      "file": "dart.js",
+      "aliases": [
+        "dart"
+      ],
+      "bytes": 1224,
+      "integrity": "sha384-5u9p8l5re8p1SDWCQBvEftV5yaDng2MPVMMSRxcViQN8Mv5KEnIgc1ij4AkNedW4"
+    },
+    "dockerfile": {
+      "file": "dockerfile.js",
+      "aliases": [
+        "dockerfile",
+        "docker",
+        "containerfile"
+      ],
+      "bytes": 767,
+      "integrity": "sha384-YtortrDLj/rw3k3KZ5nFBAffc16dqgkOLdb47bwKg/qcwr7DzhEb8yfXI9+UVHmc"
+    },
+    "go": {
+      "file": "go.js",
+      "aliases": [
+        "go",
+        "golang"
+      ],
+      "bytes": 1085,
+      "integrity": "sha384-o5zXiYci7ZKD78ZtuWzVhct4YtZeskvtpJCELUkjsYY2QLghNoIkw/sj/4Ebh7QI"
+    },
+    "graphql": {
+      "file": "graphql.js",
+      "aliases": [
+        "graphql",
+        "gql"
+      ],
+      "bytes": 851,
+      "integrity": "sha384-L3YhPeCxoTWGZweMiXQ72HoJjaaAcgeuxyF+BkIYw7Y82vrtm8rPNY7SbNtJPHY1"
+    },
+    "html": {
+      "file": "html.js",
+      "aliases": [
+        "html",
+        "htm"
+      ],
+      "bytes": 603,
+      "integrity": "sha384-7YydbSP+nrYh2wQM+TE8iqSFl1m5a8MCHWpWpHgGZhbTGaokZUvrydxZHa2wtHjm"
+    },
+    "ini": {
+      "file": "ini.js",
+      "aliases": [
+        "ini",
+        "conf",
+        "cfg",
+        "properties"
+      ],
+      "bytes": 656,
+      "integrity": "sha384-/EU+BvgNtgxBhimN6eCa8gRwB5S+6VPiFVQFndZ2g3XS1xhM0rPemPU+8YzCAsL7"
+    },
+    "java": {
+      "file": "java.js",
+      "aliases": [
+        "java"
+      ],
+      "bytes": 1387,
+      "integrity": "sha384-Ms8al14mjQrkzeQ8bUsn1+euNkWuuENl+z9aw1+HCcM1tZMeBSA/jFGHoStu/LtO"
+    },
+    "kotlin": {
+      "file": "kotlin.js",
+      "aliases": [
+        "kotlin",
+        "kt"
+      ],
+      "bytes": 1346,
+      "integrity": "sha384-VIFXSpB4HBY1d1BOAv56HLugW6RFRaeoNboLABmHT7NszBPD3O71x8w1yC3QMkhI"
+    },
+    "lua": {
+      "file": "lua.js",
+      "aliases": [
+        "lua"
+      ],
+      "bytes": 1118,
+      "integrity": "sha384-lHbL/GAeu43szxyhbjEG03zCbq+owi/nEsmhBNMqPRh2MCpO2Xy5mc3Q2PDDRk6Z"
+    },
+    "perl": {
+      "file": "perl.js",
+      "aliases": [
+        "perl",
+        "pl",
+        "pm"
+      ],
+      "bytes": 1205,
+      "integrity": "sha384-U9+o2rDXWW0uwcg06kSpb65rdRZyW+hwMKLR64iMGrR7csfDokKW/vKWnKypwu5x"
+    },
+    "php": {
+      "file": "php.js",
+      "aliases": [
+        "php"
+      ],
+      "bytes": 1586,
+      "integrity": "sha384-CU/6QWmF++Bs1+tu9IvxS8kh9z/5NiMcyspbsumDfP8pr6KgX6FVxg/jKYsIUA5g"
+    },
+    "r": {
+      "file": "r.js",
+      "aliases": [
+        "r",
+        "rscript"
+      ],
+      "bytes": 1383,
+      "integrity": "sha384-RrpTTW3Xjv51IFOG25LBW30cGMrOssoNSBomJriDooWgl4aq95oNfZEG2Eu9Ecqp"
+    },
+    "regex": {
+      "file": "regex.js",
+      "aliases": [
+        "regex",
+        "regexp",
+        "re"
+      ],
+      "bytes": 664,
+      "integrity": "sha384-TUHnB8aOiu7dWFATz7+Ll4oBQ6S7pUiTMxMCcBQ4bvd2MFsEXEdQu1Tk5mXljz5i"
+    },
+    "ruby": {
+      "file": "ruby.js",
+      "aliases": [
+        "ruby",
+        "rb"
+      ],
+      "bytes": 1226,
+      "integrity": "sha384-lNYEzvkJwQKvCAuiT9f2+30CAhjTr1M6ucveSsjhU2OajiyY7q/ePbAgKsz7jRhK"
+    },
+    "rust": {
+      "file": "rust.js",
+      "aliases": [
+        "rust",
+        "rs"
+      ],
+      "bytes": 1131,
+      "integrity": "sha384-o9phCTHvmltofEVKTT3n1oxWxmsQnX9nYqTov0jJV5LGC3bNCRHU4QrfBPubQ4gm"
+    },
+    "scala": {
+      "file": "scala.js",
+      "aliases": [
+        "scala",
+        "sbt"
+      ],
+      "bytes": 1193,
+      "integrity": "sha384-yqEWt2PHxFd/pDtjC+BaZK3fLZWYbSpWtJ89D42Tta8vIkgGUyd4iPBvqAIsNxIY"
+    },
+    "sql": {
+      "file": "sql.js",
+      "aliases": [
+        "sql",
+        "mysql",
+        "postgres",
+        "postgresql",
+        "sqlite",
+        "plsql",
+        "tsql"
+      ],
+      "bytes": 2277,
+      "integrity": "sha384-SRnS9q+7y0LmL6MCuhLfw4wDQlE2gfpD1oc9wzwmNNA3ILZfRSj6q7W+KtPjxmoc"
+    },
+    "swift": {
+      "file": "swift.js",
+      "aliases": [
+        "swift"
+      ],
+      "bytes": 1191,
+      "integrity": "sha384-GeAC5WErn7cNfIEBuczYVOKuv4scDac7yx14ZDRQz5kbiRkVhV53W5RfLBmE8pNs"
+    },
+    "toml": {
+      "file": "toml.js",
+      "aliases": [
+        "toml"
+      ],
+      "bytes": 772,
+      "integrity": "sha384-BcMO7kYuQSPbpg+XGzBi/L4MEi9phAFK0EeGzbO913DIzJsQDGF6Nsvy3QQtx8UR"
+    },
+    "xml": {
+      "file": "xml.js",
+      "aliases": [
+        "xml",
+        "svg",
+        "xhtml",
+        "xsl",
+        "xslt",
+        "rss",
+        "atom",
+        "plist"
+      ],
+      "bytes": 656,
+      "integrity": "sha384-bfWgghxOCKFRJ8V4TOPgA8b8BgSJpqttWYTUzr0llUMdXfW2JQ60m3FPHstfGLfU"
+    }
+  }
+}
