@@ -4,7 +4,7 @@ description: Cut a new AIO release (patch, minor, or major). Bumps version acros
 disable-model-invocation: true
 ---
 
-You are running the `/release` skill for `ai-output-runtime-g`. Releases are manual and lockstep — there is no CI automation. Skipping a step leaves the CDN, README, and CHANGELOG out of sync, which is a launch blocker.
+You are running the `/release` skill for `ai-output-runtime`. Releases are manual and lockstep — there is no CI automation. Skipping a step leaves the CDN, README, and CHANGELOG out of sync, which is a launch blocker.
 
 Args (`$ARGUMENTS`): one of `patch`, `minor`, `major`, or an explicit version like `0.3.1`. Default to `patch` if missing.
 
@@ -126,13 +126,13 @@ Use an annotated tag (`-a`), never a lightweight tag.
 jsDelivr propagates new tags in seconds.
 
 ```bash
-curl -sI https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v<new>/assets/ai-output-runtime.js | head -3
+curl -sI https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v<new>/assets/ai-output-runtime.js | head -3
 ```
 
 Must return `HTTP/2 200`. Then grep the body for a marker that proves the new code is live (e.g., a new symbol introduced in this release):
 
 ```bash
-curl -s https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v<new>/assets/ai-output-runtime.js | grep -c "<new-symbol>"
+curl -s https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v<new>/assets/ai-output-runtime.js | grep -c "<new-symbol>"
 ```
 
 Should print a non-zero number.
@@ -142,7 +142,7 @@ Should print a non-zero number.
 GitHub Pages takes 1–2 minutes to rebuild. If the user wants verified visual output for this release, poll the Pages site:
 
 ```bash
-until curl -s https://wxkingstar.github.io/ai-output-runtime-g/ | grep -q "<new-marker>"; do sleep 5; done
+until curl -s https://wxkingstar.github.io/ai-output-runtime/ | grep -q "<new-marker>"; do sleep 5; done
 ```
 
 Use `Bash run_in_background: true` for this — it's a one-shot wait.

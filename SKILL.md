@@ -1,5 +1,5 @@
 ---
-name: ai-output-runtime-g
+name: ai-output-runtime
 description: Use when the output is a structured report for humans — comparisons, conclusions/recommendations, status overviews, metric summaries, risk lists, audit findings, or anything the user would want to scan rather than read linearly. Triggers on natural requests like 生成报告 / 做一份分析 / 对比一下 / 总结结论 / 状态盘点 / 复盘 / 审查 / 审计 / dashboard / report / analysis / review / audit / comparison / status / summary, and on explicit mentions of AIO / AI Output Runtime / aio:name@major. Also use when validating or rendering AIO Markdown. Compatible with Claude Code, Codex, and other agents that install skills from GitHub.
 ---
 
@@ -140,7 +140,7 @@ node SKILL_DIR/scripts/aio.mjs render report.md
 By default the rendered HTML references the runtime via jsDelivr CDN, so the file is portable:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.1/assets/ai-output-runtime.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.2.2/assets/ai-output-runtime.js"></script>
 ```
 
 For an offline / `file://`-friendly artifact, inline the runtime:

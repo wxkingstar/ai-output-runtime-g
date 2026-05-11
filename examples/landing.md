@@ -70,7 +70,7 @@ AIO is the middle path. AI writes normal Markdown for prose, and emits strictly 
 ### 1. Install as an agent skill
 
 ```text
-npx skills add wxkingstar/ai-output-runtime-g -y
+npx skills add wxkingstar/ai-output-runtime -g -y
 ```
 
 Works with Claude Code, Codex, and any agent that loads skills from GitHub. After installation, ask for a report in plain language: `generate a monthly status report`, `compare these three options`, `summarize yesterday's data`. The agent emits AIO blocks where structure helps.
@@ -78,7 +78,7 @@ Works with Claude Code, Codex, and any agent that loads skills from GitHub. Afte
 ### 2. Render in the browser
 
 ```text
-<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.1/assets/ai-output-runtime.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.2.2/assets/ai-output-runtime.js"></script>
 <div id="app"></div>
 <script>
   AIOutputRuntime.render(markdown, { target: "#app", title: "Report" });
@@ -122,4 +122,4 @@ This page is itself an AIO document. Click `View source` in the top bar to see t
 - [Chart showcase](./demo-charts.html) — every `aio:chart@1` variant in one page.
 - [Chinese-locale report demo](./demo-zh.html) — the same renderer, `zh-CN` locale, dark/light toggle.
 
-For the spec, schemas, and changelog, see the [GitHub repository](https://github.com/wxkingstar/ai-output-runtime-g).
+For the spec, schemas, and changelog, see the [GitHub repository](https://github.com/wxkingstar/ai-output-runtime).

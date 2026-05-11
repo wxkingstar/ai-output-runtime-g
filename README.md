@@ -2,17 +2,17 @@
 
 > **Schema-validated JSON blocks for AI-generated reports.** Markdown stays the source. A ~38 KB safe runtime renders the visuals. The AI never writes HTML, CSS, or JavaScript.
 
-[![CI](https://github.com/wxkingstar/ai-output-runtime-g/actions/workflows/ci.yml/badge.svg)](https://github.com/wxkingstar/ai-output-runtime-g/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/aio-v0.2.0-2563eb)](https://github.com/wxkingstar/ai-output-runtime-g/releases/tag/v0.2.0)
+[![CI](https://github.com/wxkingstar/ai-output-runtime/actions/workflows/ci.yml/badge.svg)](https://github.com/wxkingstar/ai-output-runtime/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/badge/aio-v0.2.0-2563eb)](https://github.com/wxkingstar/ai-output-runtime/releases/tag/v0.2.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![CDN](https://img.shields.io/badge/jsDelivr-CDN-orange)](https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.1/assets/ai-output-runtime.js)
+[![CDN](https://img.shields.io/badge/jsDelivr-CDN-orange)](https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.2.2/assets/ai-output-runtime.js)
 
 🇬🇧 **English** · [🇨🇳 中文](README.zh-CN.md) · [🇯🇵 日本語](README.ja.md)
 
-[**Live demo →**](https://wxkingstar.github.io/ai-output-runtime-g/)
+[**Live demo →**](https://wxkingstar.github.io/ai-output-runtime/)
 
 <p align="center">
-  <a href="https://wxkingstar.github.io/ai-output-runtime-g/">
+  <a href="https://wxkingstar.github.io/ai-output-runtime/">
     <img src="docs/screenshots/landing-light.png" alt="AIO landing page in light theme" width="720">
   </a>
 </p>
@@ -42,7 +42,7 @@ The discussion that sparked this:
 Install as an agent skill (Claude Code, Codex, or any agent that loads skills from GitHub):
 
 ```bash
-npx skills add wxkingstar/ai-output-runtime-g -y
+npx skills add wxkingstar/ai-output-runtime -g -y
 ```
 
 Then ask in plain language: *"monthly status report"*, *"compare these options"*, *"summarize yesterday's data"*, *"do an audit"*. AIO blocks appear automatically when the content shape benefits from structure.
@@ -55,7 +55,7 @@ npx aio render report.md --inline-runtime
 
 The output is a single self-contained `.html` you can email, archive, or open from `file://`. No build step, no server.
 
-[**See it live →**](https://wxkingstar.github.io/ai-output-runtime-g/)
+[**See it live →**](https://wxkingstar.github.io/ai-output-runtime/)
 
 ## What you get
 
@@ -67,7 +67,7 @@ The output is a single self-contained `.html` you can email, archive, or open fr
 | candidate | `aio:chart@1` | line / bar / area / pie / donut |
 
 <p align="center">
-  <a href="https://wxkingstar.github.io/ai-output-runtime-g/demo-charts.html">
+  <a href="https://wxkingstar.github.io/ai-output-runtime/demo-charts.html">
     <img src="docs/screenshots/charts-light.png" alt="aio:chart@1 — line, bar, area, pie, donut" width="720">
   </a>
 </p>
@@ -86,7 +86,7 @@ Plus:
 **1. CDN script tag** — drop one `<script>` into any page:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.1/assets/ai-output-runtime.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.2.2/assets/ai-output-runtime.js"></script>
 <div id="app"></div>
 <script>
   AIOutputRuntime.render(markdown, { target: "#app", title: "My Report" });
@@ -96,7 +96,7 @@ Plus:
 For supply-chain integrity, pin with [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity). Generate the hash:
 
 ```bash
-curl -s https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.1/assets/ai-output-runtime.js \
+curl -s https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.2.2/assets/ai-output-runtime.js \
   | openssl dgst -sha384 -binary | openssl base64 -A
 ```
 
@@ -139,7 +139,7 @@ node scripts/aio.mjs render report.md --inline-runtime --lang en --theme dark
 ```
 ````
 
-The runtime renders this into the polished page at the [live demo](https://wxkingstar.github.io/ai-output-runtime-g/). The Markdown stays diffable, the JSON stays validated, the page stays safe.
+The runtime renders this into the polished page at the [live demo](https://wxkingstar.github.io/ai-output-runtime/). The Markdown stays diffable, the JSON stays validated, the page stays safe.
 
 ## What the AI cannot do (by design)
 

@@ -2,6 +2,19 @@
 
 All notable changes to AI Output Runtime are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## v0.2.2 — 2026-05-11
+
+### Changed
+
+- **Renamed the project from `ai-output-runtime-g` to `ai-output-runtime`.** The GitHub repository was renamed; GitHub auto-redirects old URLs, but the canonical references now drop the trailing `-g`. The new repo URL is `https://github.com/wxkingstar/ai-output-runtime`, the new Pages URL is `https://wxkingstar.github.io/ai-output-runtime/`, and the new CDN URL is `https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.2.2/assets/ai-output-runtime.js`. All README / SKILL / docs / examples references swept in this release.
+- **Install command now defaults to global install:** `npx skills add wxkingstar/ai-output-runtime -g -y` (was `-y` only). The `-g` makes the agent skill available across all projects on the machine instead of per-project. Existing per-project installs are unaffected; reinstall with `-g` to migrate.
+- `scripts/aio.mjs` `DEFAULT_RUNTIME_URL` and `RUNTIME_VERSION` updated; `package.json`, `aio-registry.json` bumped to 0.2.2.
+- `docs/index.html`, `docs/demo-zh.html`, `docs/demo-charts.html` regenerated against the new CDN base URL.
+
+### Compatibility
+
+- Old `@v0.2.x` CDN URLs under the `ai-output-runtime-g` repo name continue to resolve via GitHub's repo-rename redirect for the foreseeable future, but all new documentation points at the canonical `ai-output-runtime` path. Update production embeds at your convenience.
+
 ## v0.2.1 — 2026-05-11
 
 ### Fixed

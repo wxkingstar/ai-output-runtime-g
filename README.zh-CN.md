@@ -2,17 +2,17 @@
 
 > **AI 报告的「数据契约」。** Markdown 保留为源稿。一份 ~38 KB 的安全 runtime 负责渲染。AI 不写 HTML、CSS、也不写任何 JavaScript。
 
-[![CI](https://github.com/wxkingstar/ai-output-runtime-g/actions/workflows/ci.yml/badge.svg)](https://github.com/wxkingstar/ai-output-runtime-g/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/aio-v0.2.0-2563eb)](https://github.com/wxkingstar/ai-output-runtime-g/releases/tag/v0.2.0)
+[![CI](https://github.com/wxkingstar/ai-output-runtime/actions/workflows/ci.yml/badge.svg)](https://github.com/wxkingstar/ai-output-runtime/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/badge/aio-v0.2.0-2563eb)](https://github.com/wxkingstar/ai-output-runtime/releases/tag/v0.2.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![CDN](https://img.shields.io/badge/jsDelivr-CDN-orange)](https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.1/assets/ai-output-runtime.js)
+[![CDN](https://img.shields.io/badge/jsDelivr-CDN-orange)](https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.2.2/assets/ai-output-runtime.js)
 
 [🇬🇧 English](README.md) · 🇨🇳 **中文** · [🇯🇵 日本語](README.ja.md)
 
-[**在线 demo →**](https://wxkingstar.github.io/ai-output-runtime-g/)
+[**在线 demo →**](https://wxkingstar.github.io/ai-output-runtime/)
 
 <p align="center">
-  <a href="https://wxkingstar.github.io/ai-output-runtime-g/">
+  <a href="https://wxkingstar.github.io/ai-output-runtime/">
     <img src="docs/screenshots/landing-light.png" alt="AIO 浅色主题 landing 页" width="720">
   </a>
 </p>
@@ -42,7 +42,7 @@ Agent 写 CommonMark Markdown + 四种 schema 校验过的 JSON 块——`table`
 把 AIO 装成 agent skill（Claude Code、Codex 或任何能从 GitHub 装载 skill 的 agent）：
 
 ```bash
-npx skills add wxkingstar/ai-output-runtime-g -y
+npx skills add wxkingstar/ai-output-runtime -g -y
 ```
 
 然后用自然语言提需求：*"生成本月业绩报告"*、*"对比一下这几个方案"*、*"总结昨天的数据"*、*"做一份审计"*。当内容形状适合结构化呈现，agent 自动产出 AIO 块。
@@ -55,7 +55,7 @@ npx aio render report.md --inline-runtime
 
 产物是一份独立的 `.html`——可以发邮件、归档、`file://` 直接打开。不需要构建、不需要 server。
 
-[**看看实际效果 →**](https://wxkingstar.github.io/ai-output-runtime-g/)
+[**看看实际效果 →**](https://wxkingstar.github.io/ai-output-runtime/)
 
 ## 你拿到了什么
 
@@ -67,7 +67,7 @@ npx aio render report.md --inline-runtime
 | candidate | `aio:chart@1` | line / bar / area / pie / donut |
 
 <p align="center">
-  <a href="https://wxkingstar.github.io/ai-output-runtime-g/demo-charts.html">
+  <a href="https://wxkingstar.github.io/ai-output-runtime/demo-charts.html">
     <img src="docs/screenshots/charts-light.png" alt="aio:chart@1 五种图表" width="720">
   </a>
 </p>
@@ -86,7 +86,7 @@ npx aio render report.md --inline-runtime
 **1. CDN script 标签**——一个 `<script>` 丢进任何页面：
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.1/assets/ai-output-runtime.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.2.2/assets/ai-output-runtime.js"></script>
 <div id="app"></div>
 <script>
   AIOutputRuntime.render(markdown, { target: "#app", title: "我的报告" });
@@ -96,7 +96,7 @@ npx aio render report.md --inline-runtime
 需要供应链校验时加上 [Subresource Integrity](https://developer.mozilla.org/zh-CN/docs/Web/Security/Subresource_Integrity)：
 
 ```bash
-curl -s https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.1/assets/ai-output-runtime.js \
+curl -s https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.2.2/assets/ai-output-runtime.js \
   | openssl dgst -sha384 -binary | openssl base64 -A
 ```
 
@@ -139,7 +139,7 @@ node scripts/aio.mjs render report.md --inline-runtime --lang zh-CN --theme dark
 ```
 ````
 
-Runtime 把这份 Markdown 渲染成 [demo 站点](https://wxkingstar.github.io/ai-output-runtime-g/) 那样的精致报告。Markdown 可以 diff，JSON 已经校验，页面安全。
+Runtime 把这份 Markdown 渲染成 [demo 站点](https://wxkingstar.github.io/ai-output-runtime/) 那样的精致报告。Markdown 可以 diff，JSON 已经校验，页面安全。
 
 ## AI 不能做什么（设计约束）
 

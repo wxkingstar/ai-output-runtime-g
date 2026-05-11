@@ -8,10 +8,10 @@ Ready-to-paste copy for every launch channel. The **sequencing** lives in [`laun
 
 - **Tagline**: Schema-validated JSON blocks for AI-generated reports. The AI emits data. A 38 KB runtime emits the HTML.
 - **One-liner**: A safe middle path between Markdown and AI-generated HTML for LLM reports.
-- **Repo**: https://github.com/wxkingstar/ai-output-runtime-g
-- **Live demo**: https://wxkingstar.github.io/ai-output-runtime-g/
-- **CDN**: https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.1/assets/ai-output-runtime.js
-- **Install (as agent skill)**: `npx skills add wxkingstar/ai-output-runtime-g -y`
+- **Repo**: https://github.com/wxkingstar/ai-output-runtime
+- **Live demo**: https://wxkingstar.github.io/ai-output-runtime/
+- **CDN**: https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.2.2/assets/ai-output-runtime.js
+- **Install (as agent skill)**: `npx skills add wxkingstar/ai-output-runtime -g -y`
 - **Hero screenshot**: `docs/screenshots/landing-light.png`
 - **Charts showcase**: `docs/screenshots/charts-light.png`
 - **Dark mode**: `docs/screenshots/landing-dark.png`
@@ -43,7 +43,7 @@ Show HN: AIO — a safe middle path between Markdown and AI-generated HTML
 Show HN: AI emits data, runtime emits HTML — a 38 KB output contract for LLM reports
 ```
 
-**URL**: https://github.com/wxkingstar/ai-output-runtime-g
+**URL**: https://github.com/wxkingstar/ai-output-runtime
 
 **First comment (post it within 2 minutes of submission)**:
 
@@ -55,8 +55,8 @@ If a human writes a fixed template, you lose the dynamism that made LLM output w
 
 AIO is the third path. The agent writes CommonMark Markdown plus four schema-validated JSON blocks (table, metric-cards, callout, chart). A 38 KB runtime renders them safely. There is no surface where the AI controls executable code.
 
-Live demo: https://wxkingstar.github.io/ai-output-runtime-g/
-Repo: https://github.com/wxkingstar/ai-output-runtime-g
+Live demo: https://wxkingstar.github.io/ai-output-runtime/
+Repo: https://github.com/wxkingstar/ai-output-runtime
 
 Specifically looking for feedback on:
 1. Is the four-component set the right minimum? Too narrow? Too wide?
@@ -79,9 +79,9 @@ Saw this thread back in May and the question stuck with me — not HTML vs Markd
 
 AIO: agent writes CommonMark + 4 schema-validated JSON blocks (table, metric-cards, callout, chart). A 38 KB runtime renders them safely. The AI never touches HTML/CSS/JS.
 
-Demo: https://wxkingstar.github.io/ai-output-runtime-g/
-Install as Claude Code skill: `npx skills add wxkingstar/ai-output-runtime-g -y`
-Source: https://github.com/wxkingstar/ai-output-runtime-g
+Demo: https://wxkingstar.github.io/ai-output-runtime/
+Install as Claude Code skill: `npx skills add wxkingstar/ai-output-runtime -g -y`
+Source: https://github.com/wxkingstar/ai-output-runtime
 
 Curious what r/ClaudeCode thinks of the component set. Specifically whether 4 is too few, and whether the candidate / stable lifecycle (no breaking changes within a major version) is the right discipline.
 ```
@@ -155,12 +155,12 @@ AI emits {type, x, series}. The renderer picks the colors, axes, ticks.
 ```text
 Install as agent skill (Claude Code, Codex, any GitHub-skill agent):
 
-  npx skills add wxkingstar/ai-output-runtime-g -y
+  npx skills add wxkingstar/ai-output-runtime -g -y
 
 Or drop one <script> tag from jsDelivr CDN.
 
-Live demo: https://wxkingstar.github.io/ai-output-runtime-g/
-Source: https://github.com/wxkingstar/ai-output-runtime-g
+Live demo: https://wxkingstar.github.io/ai-output-runtime/
+Source: https://github.com/wxkingstar/ai-output-runtime
 
 MIT. v0.2. Feedback welcome.
 ```
@@ -176,12 +176,12 @@ MIT. v0.2. Feedback welcome.
 
 AIO: エージェントが Markdown + 4 つのスキーマ検証済み JSON ブロックを出力。38 KB のランタイムが安全に描画。AI は HTML/CSS/JS を一切書きません。
 
-デモ: https://wxkingstar.github.io/ai-output-runtime-g/
-リポ: https://github.com/wxkingstar/ai-output-runtime-g
-README: https://github.com/wxkingstar/ai-output-runtime-g/blob/main/README.ja.md
+デモ: https://wxkingstar.github.io/ai-output-runtime/
+リポ: https://github.com/wxkingstar/ai-output-runtime
+README: https://github.com/wxkingstar/ai-output-runtime/blob/main/README.ja.md
 
 エージェント skill としてインストール:
-npx skills add wxkingstar/ai-output-runtime-g -y
+npx skills add wxkingstar/ai-output-runtime -g -y
 
 MIT、v0.2、コンポーネントは 4 つだけ（table / metric-cards / callout / chart）。
 ```
@@ -197,12 +197,12 @@ Thariq（Anthropic Claude Code 团队）发起的"HTML vs Markdown for agent out
 
 AIO 是 runtime 路径。Agent 输出 Markdown + 4 个 schema 校验过的 JSON 块。38 KB runtime 安全渲染。AI 完全不碰 HTML/CSS/JS。
 
-Demo: https://wxkingstar.github.io/ai-output-runtime-g/
-Repo: https://github.com/wxkingstar/ai-output-runtime-g
-中文 README: https://github.com/wxkingstar/ai-output-runtime-g/blob/main/README.zh-CN.md
+Demo: https://wxkingstar.github.io/ai-output-runtime/
+Repo: https://github.com/wxkingstar/ai-output-runtime
+中文 README: https://github.com/wxkingstar/ai-output-runtime/blob/main/README.zh-CN.md
 
 装成 agent skill：
-npx skills add wxkingstar/ai-output-runtime-g -y
+npx skills add wxkingstar/ai-output-runtime -g -y
 
 MIT、v0.2、表/卡/提示/图共 4 个稳定组件。
 ```
@@ -306,7 +306,7 @@ Agent 写 CommonMark Markdown + 四个 schema 校验过的 JSON 块：
 ~38 KB，零依赖，纯 SVG 图表，明暗双主题（跟随系统或属性强制），多语言（中英内置），打印友好。
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.1/assets/ai-output-runtime.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.2.2/assets/ai-output-runtime.js"></script>
 ```
 
 也可以 inline 完全离线：`npx aio render report.md --inline-runtime`。
@@ -314,16 +314,16 @@ Agent 写 CommonMark Markdown + 四个 schema 校验过的 JSON 块：
 ## 装成 agent skill
 
 ```bash
-npx skills add wxkingstar/ai-output-runtime-g -y
+npx skills add wxkingstar/ai-output-runtime -g -y
 ```
 
 之后用自然语言提需求："做一份月度业绩报告"、"对比这几个方案"、"总结昨天的数据"——agent 自动产 AIO 块。
 
 ## Demo
 
-在线 demo：https://wxkingstar.github.io/ai-output-runtime-g/
-GitHub: https://github.com/wxkingstar/ai-output-runtime-g
-中文 README: https://github.com/wxkingstar/ai-output-runtime-g/blob/main/README.zh-CN.md
+在线 demo：https://wxkingstar.github.io/ai-output-runtime/
+GitHub: https://github.com/wxkingstar/ai-output-runtime
+中文 README: https://github.com/wxkingstar/ai-output-runtime/blob/main/README.zh-CN.md
 
 ## 不试图做什么
 
@@ -345,17 +345,17 @@ MIT 协议、agent 中立、欢迎拍砖。
 ## 即刻 (Jike) / V2EX (中文短帖)
 
 ```text
-开源了 ai-output-runtime-g：AI 输出报告的协议层。
+开源了 ai-output-runtime：AI 输出报告的协议层。
 
 背景：5 月 Anthropic Claude Code 的 Thariq 提出"HTML 比 Markdown 适合 agent 输出"，但留下一个问题——HTML 是 AI 写还是 runtime 写？
 
 AIO 选 runtime 写。Agent 输出 Markdown + 4 个 JSON 块（表格/卡片/提示/图表），38KB runtime 渲染。AI 完全不碰 HTML/CSS/JS。
 
 装成 Claude Code / Codex 的 skill：
-npx skills add wxkingstar/ai-output-runtime-g -y
+npx skills add wxkingstar/ai-output-runtime -g -y
 
-Demo: https://wxkingstar.github.io/ai-output-runtime-g/
-Source: https://github.com/wxkingstar/ai-output-runtime-g
+Demo: https://wxkingstar.github.io/ai-output-runtime/
+Source: https://github.com/wxkingstar/ai-output-runtime
 ```
 
 ---
@@ -410,7 +410,7 @@ https://simonwillison.net/2026/May/8/unreasonable-effectiveness-of-html/
 約 38 KB、依存ゼロ、純粋な SVG チャート、ライト / ダーク両テーマ、多言語（英語と中国語を同梱）、印刷対応。
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime-g@v0.2.1/assets/ai-output-runtime.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/wxkingstar/ai-output-runtime@v0.2.2/assets/ai-output-runtime.js"></script>
 ```
 
 完全オフラインなら inline 可能: `npx aio render report.md --inline-runtime`。
@@ -418,16 +418,16 @@ https://simonwillison.net/2026/May/8/unreasonable-effectiveness-of-html/
 ## エージェント skill としてインストール
 
 ```bash
-npx skills add wxkingstar/ai-output-runtime-g -y
+npx skills add wxkingstar/ai-output-runtime -g -y
 ```
 
 その後は自然言語で依頼するだけ——「月次レポート」「比較」「要約」「監査」。エージェントが自動的に AIO ブロックを出力します。
 
 ## デモ
 
-ライブデモ: https://wxkingstar.github.io/ai-output-runtime-g/
-GitHub: https://github.com/wxkingstar/ai-output-runtime-g
-日本語 README: https://github.com/wxkingstar/ai-output-runtime-g/blob/main/README.ja.md
+ライブデモ: https://wxkingstar.github.io/ai-output-runtime/
+GitHub: https://github.com/wxkingstar/ai-output-runtime
+日本語 README: https://github.com/wxkingstar/ai-output-runtime/blob/main/README.ja.md
 
 ## やらないこと
 
@@ -470,9 +470,9 @@ Anthropic Claude Code チームの Thariq Shihipar 氏が投げかけた「HTML 
 - 38KB runtime 安全渲染，AI 不碰 HTML/CSS/JS
 - 装成 Claude Code/Codex 的 skill 直接用
 
-Demo: https://wxkingstar.github.io/ai-output-runtime-g/
-Repo: https://github.com/wxkingstar/ai-output-runtime-g
-中文 README: https://github.com/wxkingstar/ai-output-runtime-g/blob/main/README.zh-CN.md
+Demo: https://wxkingstar.github.io/ai-output-runtime/
+Repo: https://github.com/wxkingstar/ai-output-runtime
+中文 README: https://github.com/wxkingstar/ai-output-runtime/blob/main/README.zh-CN.md
 
 帮看一眼 + star 一下，多谢
 ```
@@ -490,8 +490,8 @@ If the AI writes it, your report is an attack surface. If a human writes a templ
 
 AIO is the third path: AI emits validated data, a 38 KB runtime emits the HTML. Four components (table, metric cards, callout, chart). MIT, agent-agnostic, works with Claude Code, Codex, or any GitHub-skill agent.
 
-Live demo: https://wxkingstar.github.io/ai-output-runtime-g/
-GitHub: https://github.com/wxkingstar/ai-output-runtime-g
+Live demo: https://wxkingstar.github.io/ai-output-runtime/
+GitHub: https://github.com/wxkingstar/ai-output-runtime
 
 I'd love feedback from anyone building agent skills or report tooling.
 ```
