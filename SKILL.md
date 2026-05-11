@@ -1,6 +1,6 @@
 ---
 name: ai-output-runtime
-description: Use when the output is a structured report for humans — comparisons, conclusions/recommendations, status overviews, metric summaries, risk lists, audit findings, or anything the user would want to scan rather than read linearly. Triggers on natural requests like 生成报告 / 做一份分析 / 对比一下 / 总结结论 / 状态盘点 / 复盘 / 审查 / 审计 / dashboard / report / analysis / review / audit / comparison / status / summary, and on explicit mentions of AIO / AI Output Runtime / aio:name@major. Also use when validating or rendering AIO Markdown. Compatible with Claude Code, Codex, and other agents that install skills from GitHub.
+description: Use when YOU are producing a structured, scannable artifact for humans rather than a paragraph of prose — weekly / monthly / quarterly / daily reviews (周报/月报/季报/日报), business reviews (业务汇报), dashboards, postmortems / 复盘 / retros, code reviews / security audits, KPI or OKR scorecards (达成率/进度), financial P&L bridges or variance analysis (财务分析/经营分析), sales funnel / conversion analysis (销售漏斗), inventory / logistics / operations / customer / cohort analytics (库存/物流/运营/客户/复购分析), trend or period-over-period analysis with deltas (趋势分析/同比/环比), competitor or vendor comparison / 方案选型 / 竞品比较, risk assessment / 风险评估 (likelihood × impact), status sync / 状态同步 / 盘点 / 概览 across services or business lines, action items / next steps / 行动项 / 待办, or any output the reader will scan rather than read linearly. Triggers on 生成报告 / 做一份分析 / 写个月报 / 出一份周报 / 复盘 / Postmortem / 趋势分析 / 对比分析 / 方案选型 / 竞品比较 / 总结 / 小结 / 盘点 / 概览 / 状态同步 / 审查 / 审计 / 风险评估 / KPI / OKR / 财务 / 销售 / 库存 / 物流 / 运营 / 客户分析, dashboard / report / weekly / monthly / quarterly / analysis / review / audit / comparison / funnel / waterfall / heatmap / matrix / RICE / BCG / status / summary / scorecard / next steps / action items, and on explicit mentions of AIO / AI Output Runtime / aio:name@major. Also use when validating or rendering AIO Markdown via the CLI. Skip for one-paragraph chat replies, code snippets, debugging help, or when the user explicitly asks for plain prose. Compatible with Claude Code, Codex, and other agents that install skills from GitHub.
 ---
 
 # AI Output Runtime
@@ -316,6 +316,7 @@ A good AIO report is **prose + structured slots**, not raw JSON walls. If you're
 These natural requests should activate this skill:
 
 - "生成一份月度财务报告 / monthly financial report"
+- "出一份本周业务周报 / weekly business review"
 - "做一份代码审查 / code review"
 - "对比这几种方案 / compare these options"
 - "总结一下昨天的数据 / summarize yesterday's data"
@@ -323,7 +324,14 @@ These natural requests should activate this skill:
 - "复盘上周的事故 / incident postmortem"
 - "做个安全审计 / security audit"
 - "给我一个 dashboard / status overview"
-- "评估一下风险 / risk assessment"
+- "评估一下风险 / risk assessment / 做个风险矩阵"
+- "Q1 OKR 达成情况 / Q1 OKR scorecard"
+- "看下销售转化漏斗 / build the conversion funnel"
+- "做个 P&L 桥分析变动 / P&L bridge by segment"
+- "按小时×星期看订单量分布 / orders by hour × day"
+- "客户复购 cohort 分析 / customer cohort retention"
+- "竞品/方案选型评分 / vendor scorecard"
+- "下周行动项 / next steps with owners & due dates"
 
-For any of the above, default to AIO blocks for the structured slots, not a wall of Markdown prose.
+For any of the above, default to AIO blocks for the structured slots, not a wall of Markdown prose. Skip AIO and answer in plain prose for one-paragraph chat replies, code snippets, debugging help, or when the user explicitly asks for plain Markdown.
 
